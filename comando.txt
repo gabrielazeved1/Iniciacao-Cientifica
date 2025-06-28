@@ -1,0 +1,28 @@
+acessar minio 
+mc alias set localminio http://localhost:9000 minio miniol23
+
+
+criar buckets principais
+mc mb localminio/datalake
+mc mb localminio/backup
+
+criar usuarios (usuario/senha) <- login
+mc admin user add localminio amanda amanda123
+mc admin user add localminio marcio marcio123
+
+Fazer upload de um arquivo local para um bucket:
+mc cp /caminho/para/seu/arquivo.csv localminio/datalake
+
+
+Listar arquivos no bucket:
+mc ls localminio/datalake
+
+
+Fazer download do arquivo do bucket para a máquina local:
+mc cp localminio/datalake/arquivo.csv /caminho/para/salvar/localmente/
+
+Rodar docker compose
+docker-compose up -d
+
+parar docker compose
+docker-compose down
