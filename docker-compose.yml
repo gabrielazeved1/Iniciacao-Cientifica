@@ -1,25 +1,19 @@
-version: '3.7'
+version: "3.8"
 
 services:
   minio:
+    container_name: minio-server
     image: minio/minio:latest
-    container_name: minio
-    hostname: minio
     ports:
-      - "9000:9000"   # API MinIO
-      - "9001:9001"   # Console MinIO
-    volumes:
-      - minio-data:/data
+      - "9000:9000"     # API
+      - "9001:9001"     # Web UI
     environment:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: miniol23
+    volumes:
+      - minio-data:/data
     command: server /data --console-address ":9001"
-    networks:
-      - bigdata
 
 volumes:
   minio-data:
-
-networks:
-  bigdata:
-    driver: bridge
+    name: projects_minio-data
