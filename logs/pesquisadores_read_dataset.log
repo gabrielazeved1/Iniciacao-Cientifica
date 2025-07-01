@@ -1,0 +1,5 @@
+2025-07-01 11:09:09,150 - minio_datalake_app - INFO - Iniciando script para ler dataset.
+2025-07-01 11:09:09,150 - minio_datalake_app - INFO - Tentando ler CSV do MinIO: bucket='datalake', arquivo='sample_data.csv'
+2025-07-01 11:09:09,701 - minio_datalake_app - INFO - Arquivo 'sample_data.csv' lido com sucesso do bucket 'datalake'.
+2025-07-01 11:09:09,702 - minio_datalake_app - INFO - Mostrando as primeiras 5 linhas do arquivo 'sample_data.csv' no bucket 'datalake'.
+2025-07-01 11:09:09,706 - minio_datalake_app - INFO - Script de leitura de dataset finalizado.

@@ -14,6 +14,9 @@ services:
       - minio-data:/data
     command: server /data --console-address ":9001"
 
+    #restart: always   serve para que quando o computador inicar, o docker inicar de forma "instantanea"""
+    
+
 volumes:
   minio-data:
     name: projects_minio-data
