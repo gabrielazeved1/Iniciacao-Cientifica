@@ -13,9 +13,9 @@ class MinioClient:
     Classe responsável por interagir com o MinIO usando o SDK oficial.
     """
 
-    def __init__(self, endpoint="localhost:9000", access_key="minio", secret_key="miniol23", secure=False):
+    def __init__(self, endpoint="192.168.18.31:9000", access_key="minio", secret_key="miniol23", secure=False):
         self.client = Minio(
-            endpoint,
+            endpoint, # Este 'endpoint' agora terá "192.168.18.31:9000" por padrão
             access_key=access_key,
             secret_key=secret_key,
             secure=secure
