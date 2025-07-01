@@ -49,6 +49,7 @@ Certifique-se de ter os seguintes softwares instalados em seu ambiente (no seu M
     * [Outras plataformas](https://min.io/docs/minio/linux/reference/minio-client/mc.html#install-minio-client)
 
 ### **3. Estrutura do Projeto**
+```
 ├── .git/                     # Controle de versão
 ├── data/                     # Opcional: Pasta para seus dados locais (entrada/saída de scripts)
 │   ├── Comfaulda/            # Exemplo de pasta de dataset
@@ -77,197 +78,133 @@ Certifique-se de ter os seguintes softwares instalados em seu ambiente (no seu M
 ├── docker-compose.yml        # Configuração do MinIO via Docker Compose
 ├── README.md                 # Este arquivo
 └── requirements.txt          # Dependências Python do projeto
+```
 
 ### **4. Configuração Inicial do Ambiente**
 
-Siga estas etapas para configurar e iniciar seu Data Lake local.
-
 #### **Iniciar o MinIO**
 
-1.  Navegue até a raiz do seu projeto no terminal (onde está o `docker-compose.yml`).
-2.  Inicie o servidor MinIO usando Docker Compose:
-    ```bash
-    docker-compose up -d
-    ```
-    *Isso iniciará o MinIO em background. A porta da API será `9000` e a UI (interface web) será `9001`.*
-3.  Acesse o painel web do MinIO no seu navegador: `http://localhost:9001`
-    * **Usuário Raiz:** `minio`
-    * **Senha Raiz:** `miniol23`
+```bash
+# Navegue até a raiz do seu projeto
+docker-compose up -d
+```
+
+Acesse o painel web: [http://localhost:9001](http://localhost:9001)  
+Credenciais padrão:
+- Usuário: `minio`
+- Senha: `miniol23`
 
 #### **Instalar Dependências Python**
 
-1.  Certifique-se de estar na raiz do seu projeto.
-2.  Instale as bibliotecas Python necessárias usando `pip`:
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+pip install -r requirements.txt
+```
 
 #### **Configurar MinIO Client (mc)**
-
-Configure um alias para seu servidor MinIO local, o que facilita o uso do `mc` para comandos administrativos:
 
 ```bash
 mc alias set localminio http://localhost:9000 minio miniol23
 ```
 
-### **Inicializar o Data Lake**
+#### **Inicializar o Data Lake**
 
-Este script verificará a conexão com o MinIO e criará os buckets essenciais (`datalake`, `backup`) se eles ainda não existirem.
+```bash
+python src/main.py
+```
 
-1.  Certifique-se de que o MinIO esteja rodando (`docker-compose ps` deve mostrar `minio-server` como `Up`).
-2.  Execute o script de inicialização:
-    ```bash
-    python src/main.py
-    ```
-    *Você verá mensagens no terminal e em `logs/datalake_admin.log` confirmando a conexão e a criação (ou verificação) dos buckets.*
+---
 
 ### **5. Uso para o Administrador do Data Lake**
 
-Como administrador do Data Lake, você é responsável pela infraestrutura e pelos backups.
-
 #### **Logs de Administração**
 
-* Todos os logs relacionados à inicialização e manutenção da infraestrutura do MinIO (execução de `src/main.py`) são registrados em:
-    `logs/datalake_admin.log`
+- `logs/datalake_admin.log`
 
 #### **Sistema de Backup Interno**
 
-O projeto inclui um script Python (`src/backup_datalake.py`) que utiliza o `mc mirror` para criar cópias de segurança dos seus buckets MinIO em um diretório local no servidor.
+Executar manualmente:
 
-* **Destino do Backup:**
-    Os backups serão armazenados em: `/Users/gabrielazevedo/minio_backups/daily/` (para o protótipo no Mac) ou em `/srv/backups/minio_datalake/daily/` (para o servidor de laboratório). Dentro deste diretório, os backups são organizados por `YYYYMMDD_HHMMSS` (ano/mês/dia_hora/minuto/segundo).
+```bash
+python src/backup_datalake.py
+```
 
-* **Executando o Backup Manualmente (para Teste/Demo):**
-    ```bash
-    python src/backup_datalake.py
-    ```
-    *Isso criará uma nova pasta de backup com timestamp no diretório de destino configurado.*
-    *Os logs de backup serão registrados em: `logs/datalake_backup.log`.*
+Automatizar via cron:
 
-* **Configuração de Automação (Cron Job - Linux/macOS):**
-    Para automatizar o backup (ex: diariamente à 1h da manhã no servidor de laboratório), você usaria um `cron job`.
-    1.  Abra seu crontab: `crontab -e`
-    2.  Adicione a linha (ajuste o caminho completo para o script):
-        ```bash
-        0 1 * * * /usr/bin/python3 /caminho/completo/para/seu/projeto/src/backup_datalake.py >> /var/log/minio_backup_cron.log 2>&1
-        ```
+```bash
+0 1 * * * /usr/bin/python3 /caminho/do/projeto/src/backup_datalake.py >> /var/log/minio_backup_cron.log 2>&1
+```
 
-* **Estratégia de Restauração (CUIDADO!):**
-    A restauração envolve copiar dados de volta do backup local para o MinIO.
-    **Sempre teste a restauração em um bucket de teste primeiro!**
-    * **Restaurar um bucket inteiro (CUIDADO - SOBRESCREVE TODO O CONTEÚDO DO BUCKET!):**
-        ```bash
-        mc mirror --overwrite /Users/gabrielazevedo/minio_backups/daily/YYYYMMDD_HHMMSS/datalake localminio/datalake
-        ```
-        *(Substitua `YYYYMMDD_HHMMSS` pelo timestamp do backup desejado.)*
-    * **Restaurar um arquivo específico:**
-        ```bash
-        mc cp /Users/gabrielazevedo/minio_backups/daily/YYYYMMDD_HHMMSS/datalake/sua_pasta/arquivo.csv localminio/datalake/sua_pasta/arquivo.csv
-        ```
+Restaurar dados (⚠️ cuidado):
+
+```bash
+# Restaurar bucket inteiro
+mc mirror --overwrite /caminho/do/backup/YYYYMMDD_HHMMSS/datalake localminio/datalake
+
+# Restaurar arquivo específico
+mc cp /caminho/do/backup/YYYYMMDD_HHMMSS/datalake/pasta/arquivo.csv localminio/datalake/pasta/arquivo.csv
+```
+
+---
 
 ### **6. Uso para Pesquisadores**
 
-Os pesquisadores usarão os scripts na pasta `researchers_scripts/` para interagir com o Data Lake.
-
 #### **Configurar Credenciais**
-
-Para este protótipo, os pesquisadores usarão as credenciais de administrador do MinIO (`minio`/`miniol23`) que possuem acesso total aos buckets. Eles precisarão definir essas credenciais como variáveis de ambiente em seu terminal **antes de executar qualquer script**:
 
 ```bash
 export MINIO_ACCESS_KEY="minio"
 export MINIO_SECRET_KEY="miniol23"
-
-# Scripts de Pesquisadores
-
-Todos os scripts devem ser executados a partir da raiz do projeto:  
-**`~/projects/src/IC/`** no seu Mac ou o diretório raiz do projeto no servidor.
+```
 
 ---
 
-## 📤 `upload_dataset.py` — Upload de um Arquivo
+### **Scripts de Pesquisadores**
 
-Envia um arquivo local para um bucket, com a opção de especificar uma subpasta.
+Todos os scripts devem ser executados a partir da raiz do projeto (`~/projects/src/IC/`).
+
+#### 📤 `upload_dataset.py`
 
 ```bash
-# Upload de um arquivo para a raiz do bucket 'datalake'
 python researchers_scripts/upload_dataset.py datalake data/meu_arquivo.csv
-
-# Upload de um arquivo para a pasta 'Comfaulda' dentro do bucket 'datalake'
 python researchers_scripts/upload_dataset.py datalake data/meu_arquivo.csv Comfaulda
 ```
 
----
-
-## 📁 `upload_directory.py` — Upload de um Diretório Completo
-
-Envia todos os arquivos de um diretório local (mantendo a estrutura de subpastas) para um bucket.
+#### 📁 `upload_directory.py`
 
 ```bash
-# Upload da pasta 'data/Comfaulda' para o bucket 'datalake' sob o prefixo 'Comfaulda/'
 python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
-
-# Upload da pasta 'data/stock_market_data' para 'datalake/financeiro/'
 python researchers_scripts/upload_directory.py datalake data/stock_market_data financeiro
 ```
 
----
-
-## 📥 `download_dataset.py` — Download de um Arquivo
-
-Baixa um arquivo do MinIO para a pasta **Downloads** do usuário.
+#### 📥 `download_dataset.py`
 
 ```bash
-# Baixar 'meu_arquivo.csv' da raiz do bucket 'datalake'
 python researchers_scripts/download_dataset.py datalake meu_arquivo.csv
-
-# Baixar 'documento.pdf' da pasta 'relatorios' no bucket 'datalake'
 python researchers_scripts/download_dataset.py datalake relatorios/documento.pdf
 ```
 
----
-
-## 📦 `list_buckets.py` — Listar Buckets
-
-Lista todos os buckets disponíveis no MinIO.
+#### 📦 `list_buckets.py`
 
 ```bash
 python researchers_scripts/list_buckets.py
 ```
 
----
-
-## 📂 `list_bucket_contents.py` — Listar Conteúdo de um Bucket/Pasta
-
-Lista os objetos e subpastas dentro de um bucket ou de um prefixo específico.
+#### 📂 `list_bucket_contents.py`
 
 ```bash
-# Listar todo o conteúdo do bucket 'datalake'
 python researchers_scripts/list_bucket_contents.py datalake
-
-# Listar o conteúdo da pasta 'Comfaulda' dentro do bucket 'datalake'
 python researchers_scripts/list_bucket_contents.py datalake Comfaulda/
 ```
 
----
-
-## 📊 `read_dataset.py` — Ler Dataset com Pandas
-
-Lê diretamente um arquivo CSV do MinIO para um DataFrame do Pandas.  
-Útil para análise imediata sem necessidade de download.
+#### 📊 `read_dataset.py`
 
 ```bash
-# Ler 'dados_vendas.csv' da raiz do bucket 'datalake'
 python researchers_scripts/read_dataset.py datalake dados_vendas.csv
-
-# Ler 'relatorio_mensal.csv' da pasta 'analises/2025' no bucket 'datalake'
 python researchers_scripts/read_dataset.py datalake analises/2025/relatorio_mensal.csv
 ```
 
 ---
 
-## 📝 Logs do Sistema
-
-Todos os logs detalhados das operações são salvos na pasta `logs/`:
+### **7. Logs do Sistema**
 
 | Caminho do Log                                 | Descrição                                                  |
 |------------------------------------------------|------------------------------------------------------------|
@@ -282,5 +219,26 @@ Todos os logs detalhados das operações são salvos na pasta `logs/`:
 
 ---
 
-> Para dúvidas ou contribuições, entre em contato com a equipe de desenvolvimento do projeto.
+### **8. Considerações Finais e Próximos Passos**
 
+- Validar os scripts em diferentes sistemas operacionais.
+- Automatizar testes de integridade dos dados após backup.
+- Implementar controle de acesso mais refinado por políticas.
+- Expandir para múltiplos usuários com isolamento de dados.
+
+---
+
+### **9. Solução de Problemas Comuns**
+
+**Problema:** Erro de autenticação no MinIO  
+**Solução:** Verifique se as variáveis de ambiente estão exportadas corretamente.
+
+**Problema:** Bucket não encontrado  
+**Solução:** Certifique-se de rodar `main.py` para criar os buckets antes do uso.
+
+**Problema:** Porta em uso ao iniciar o Docker  
+**Solução:** Altere as portas no `docker-compose.yml` ou pare o processo em uso.
+
+---
+
+> Para dúvidas ou contribuições, entre em contato com a equipe de desenvolvimento do projeto.
