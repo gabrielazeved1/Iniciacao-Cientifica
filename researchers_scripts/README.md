@@ -9,17 +9,17 @@ Bem-vindo ao Data Lake local do nosso laboratório! Este guia irá ajudá-lo a c
 1.  [Introdução]
 2.  [Pré-requisitos]
 3.  [Configuração Inicial]
-4.  [Acessando o Data Lake](https://www.google.com/search?q=%234-acessando-o-data-lake)
-      * [Via Terminal (Scripts Python)](https://www.google.com/search?q=%23via-terminal-scripts-python)
-      * [Via Interface Web (MinIO Console)](https://www.google.com/search?q=%23via-interface-web-minio-console)
-5.  [Utilizando os Scripts do Data Lake](https://www.google.com/search?q=%235-utilizando-os-scripts-do-data-lake)
-      * [Listar Buckets](https://www.google.com/search?q=%23listar-buckets)
-      * [Listar Conteúdo de um Bucket/Pasta](https://www.google.com/search?q=%23listar-conte%C3%BAdo-de-um-bucketpasta)
-      * [Upload de um Arquivo](https://www.google.com/search?q=%23upload-de-um-arquivo)
-      * [Upload de um Diretório Completo](https://www.google.com/search?q=%23upload-de-um-diret%C3%B3rio-completo)
-      * [Download de um Arquivo](https://www.google.com/search?q=%23download-de-um-arquivo)
-      * [Ler Dataset com Pandas](https://www.google.com/search?q=%23ler-dataset-com-pandas)
-6.  [Suporte e Dúvidas](https://www.google.com/search?q=%236-suporte-e-d%C3%BAvidas)
+4.  [Acessando o Data Lake]
+      * [Via Terminal (Scripts Python)]
+      * [Via Interface Web (MinIO Console)]
+5.  [Utilizando os Scripts do Data Lake]
+      * [Listar Buckets]
+      * [Listar Conteúdo de um Bucket/Pasta]
+      * [Upload de um Arquivo]
+      * [Upload de um Diretório Completo]
+      * [Download de um Arquivo]
+      * [Ler Dataset com Pandas]
+6.  [Suporte e Dúvidas]
 
 -----
 
@@ -39,14 +39,14 @@ Para começar, certifique-se de que sua máquina tenha os seguintes softwares in
 * **pip:** O gerenciador de pacotes do Python (geralmente vem com o Python).
 
 * **Git:** Se você clonar o projeto do GitHub.  
-  [Instalação do Git](https://git-scm.com/downloads)
+  [Instalação do Git]
 
 ### **3. Configuração Inicial**
 
 1.  **Obtenha o Código do Projeto:**
 
 ```bash
-git clone <URL_DO_REPOSITORIO_DO_PROJETO>
+git clone git@github.com:gabrielazeved1/Iniciacao-Cientifica.git
 cd <nome_da_pasta_do_projeto>
 ```
 

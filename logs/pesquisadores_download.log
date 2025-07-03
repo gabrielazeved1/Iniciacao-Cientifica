@@ -1,7 +1,0 @@
-2025-07-01 11:09:22,380 - minio_datalake_app - INFO - Iniciando script de download de dataset.
-2025-07-01 11:09:22,380 - minio_datalake_app - INFO - Tentando baixar o objeto 'sample_data.csv' do bucket 'datalake'.
-2025-07-01 11:09:22,381 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: localhost:9000
-2025-07-01 11:09:22,381 - minio_datalake_app - INFO - Tentando baixar 'sample_data.csv' do bucket 'datalake' para '/Users/gabrielazevedo/Downloads/sample_data.csv'.
-2025-07-01 11:09:22,418 - minio_datalake_app - INFO - Arquivo 'sample_data.csv' do bucket 'datalake' baixado em '/Users/gabrielazevedo/Downloads/sample_data.csv'.
-2025-07-01 11:09:22,418 - minio_datalake_app - INFO - Download do arquivo 'sample_data.csv' do bucket 'datalake' realizado com sucesso na pasta Downloads.
-2025-07-01 11:09:22,418 - minio_datalake_app - INFO - Script de download de dataset finalizado.

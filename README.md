@@ -38,15 +38,14 @@ Este projeto estabelece um ambiente de Data Lake local utilizando o MinIO, um ar
 Certifique-se de ter os seguintes softwares instalados em seu ambiente (no seu Mac para o protótipo, e no servidor de laboratório para produção):
 
 * **Docker:** Para rodar o MinIO.
-    * [Instalação do Docker Desktop](https://docs.docker.com/desktop/)
+    * [Instalação do Docker Desktop]
 * **Docker Compose:** Para orquestrar os serviços Docker.
     * Geralmente vem com o Docker Desktop.
 * **Python 3.x:** Linguagem de programação para os scripts.
-    * [Instalação do Python](https://www.python.org/downloads/)
+    * [Instalação do Python]
 * **pip:** Gerenciador de pacotes Python (geralmente vem com o Python).
 * **MinIO Client (mc):** Ferramenta de linha de comando para interagir com o MinIO e gerenciar políticas.
     * **No Mac (via Homebrew):** `brew install minio/stable/mc`
-    * [Outras plataformas](https://min.io/docs/minio/linux/reference/minio-client/mc.html#install-minio-client)
 
 ### **3. Estrutura do Projeto**
 ```
@@ -61,11 +60,11 @@ Certifique-se de ter os seguintes softwares instalados em seu ambiente (no seu M
 │   ├── download_policy.json
 │   └── upload_policy.json
 ├── researchers_scripts/      # Scripts para uso dos pesquisadores
-│   ├── download_dataset.py
+│   ├── download_file.py
 │   ├── list_bucket_contents.py
 │   ├── list_buckets.py
-│   ├── read_dataset.py
-│   ├── upload_dataset.py
+│   ├── read_file.py
+│   ├── upload_file.py
 │   └── upload_directory.py   # Script para upload de diretórios inteiros
 ├── src/                      # Código fonte principal da aplicação
 │   ├── init.py
@@ -161,25 +160,25 @@ export MINIO_SECRET_KEY="miniol23"
 
 Todos os scripts devem ser executados a partir da raiz do projeto (`~/projects/src/IC/`).
 
-#### 📤 `upload_dataset.py`
+#### 📤 `upload_file.py`
 
 ```bash
-python researchers_scripts/upload_dataset.py datalake data/meu_arquivo.csv
-python researchers_scripts/upload_dataset.py datalake data/meu_arquivo.csv Comfaulda
+python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv
+python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv Comfaulda
 ```
 
 #### 📁 `upload_directory.py`
 
 ```bash
 python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
-python researchers_scripts/upload_directory.py datalake data/stock_market_data financeiro
+python researchers_scripts/upload_directory.py datalake data/stock_market_data 
 ```
 
-#### 📥 `download_dataset.py`
+#### 📥 `download_file.py`
 
 ```bash
-python researchers_scripts/download_dataset.py datalake meu_arquivo.csv
-python researchers_scripts/download_dataset.py datalake relatorios/documento.pdf
+python researchers_scripts/download_file.py datalake meu_arquivo.csv
+python researchers_scripts/download_file.py datalake subpasta/documento.pdf
 ```
 
 #### 📦 `list_buckets.py`
@@ -198,8 +197,8 @@ python researchers_scripts/list_bucket_contents.py datalake Comfaulda/
 #### 📊 `read_dataset.py`
 
 ```bash
-python researchers_scripts/read_dataset.py datalake dados_vendas.csv
-python researchers_scripts/read_dataset.py datalake analises/2025/relatorio_mensal.csv
+python researchers_scripts/read_file.py datalake meu_arquivo.csv
+python researchers_scripts/read_file.py datalake analises/2025/relatorio_mensal.csv
 ```
 
 ---
@@ -219,7 +218,7 @@ python researchers_scripts/read_dataset.py datalake analises/2025/relatorio_mens
 
 ---
 
-### **8. Considerações Finais e Próximos Passos**
+### **8. Melhorar **
 
 - Validar os scripts em diferentes sistemas operacionais.
 - Automatizar testes de integridade dos dados após backup.
@@ -241,4 +240,4 @@ python researchers_scripts/read_dataset.py datalake analises/2025/relatorio_mens
 
 ---
 
-> Para dúvidas ou contribuições, entre em contato com a equipe de desenvolvimento do projeto.
+

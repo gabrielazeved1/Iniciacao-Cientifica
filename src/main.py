@@ -2,40 +2,31 @@ import logging
 import sys
 import os
 
-# Adiciona o diretório 'src' ao sys.path para permitir importações relativas
+
+# adicionar o diretório 'src' ao sys.path para permitir importações relativas
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Importa a função de configuração de log
 from logger import setup_logging
-
-# Importa a sua classe MinioClient
 from minio_client import MinioClient
 
-# Inicializa o logger para as operações de setup/admin do seu DL
 logger = setup_logging(log_file_name="datalake_admin.log")
 
 def initialize_datalake_environment():
     """
-    Função para inicializar o ambiente do Data Lake:
-    - Verificar conexão com MinIO.
-    - Criar buckets essenciais se não existirem.
+    função para inicializar o ambiente do Data Lake:
+    - verificar conexão com MinIO.
+    - criar buckets essenciais se não existirem.
     """
     logger.info("Iniciando a verificação e configuração do ambiente do Data Lake.")
 
     try:
         minio_client = MinioClient()
-
-        # Verifica a conexão com o MinIO
-        # (A inicialização do MinioClient já tenta conectar, mas podemos fazer um teste explícito)
         try:
-            # Uma forma de testar a conexão é listar os buckets, o que falharia se não conectado
-            # Ou, se houver um método ping() ou health check na sua MinioClient
-            logger.info("Testando conexão com o MinIO...")
             minio_client.client.list_buckets()
             logger.info("Conexão com MinIO estabelecida com sucesso.")
         except Exception as e:
             logger.critical(f"NÃO FOI POSSÍVEL CONECTAR AO MINIO. Verifique se o MinIO está rodando e acessível. Erro: {e}")
-            sys.exit(1) # Sai do programa se não conseguir conectar
+            sys.exit(1) 
 
         # Define os buckets essenciais para o seu Data Lake
         essential_buckets = ["datalake", "backup"]

@@ -1,20 +1,19 @@
 import sys
 import os
 import pandas as pd
-import logging # Importar o módulo logging
+import logging 
+from logger import setup_logging
 
-# Adicionar o diretório 'src' ao sys.path de forma robusta
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(project_root, 'src'))
 
-# Importar a função de configuração de log
-from logger import setup_logging
+logger = setup_logging(log_file_name="pesquisadores_read_file.log")
 
-# --- Configuração de Logging para este script ---
-logger = setup_logging(log_file_name="pesquisadores_read_dataset.log")
-# --- FIM da Configuração de Logging ---
 
 def read_csv_from_minio(bucket_name, file_path):
+    """
+    leitura do arquivo csv de forma direta
+    """
     logger.info(f"Tentando ler CSV do MinIO: bucket='{bucket_name}', arquivo='{file_path}'")
     s3_path = f"s3://{bucket_name}/{file_path}"
     storage_options = {
@@ -28,13 +27,13 @@ def read_csv_from_minio(bucket_name, file_path):
         return df
     except Exception as e:
         logger.error(f"Falha ao ler o arquivo CSV '{file_path}' do bucket '{bucket_name}': {e}", exc_info=True)
-        raise # Re-levanta a exceção para que o bloco main possa capturá-la e o script falhe
+        raise 
 
 def main():
-    logger.info("Iniciando script para ler dataset.")
+    logger.info("Iniciando leitura do arquivo.")
 
     if len(sys.argv) < 3:
-        logger.error("Uso correto: python read_dataset.py <bucket_name> <caminho_arquivo>")
+        logger.error("Uso correto: python read_file.py <bucket_name> <caminho_arquivo>")
         sys.exit(1)
 
     bucket = sys.argv[1]
