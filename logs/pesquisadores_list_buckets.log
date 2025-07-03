@@ -16,3 +16,21 @@
 2025-07-03 16:09:51,483 - minio_datalake_app - INFO - - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
 2025-07-03 16:09:51,483 - minio_datalake_app - INFO - - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
 2025-07-03 16:09:51,483 - minio_datalake_app - INFO - Script para listar buckets finalizado.
+2025-07-03 16:45:06,575 - minio_datalake_app - INFO - Iniciando script para listar buckets.
+2025-07-03 16:45:06,577 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-03 16:45:06,596 - minio_datalake_app - INFO - Buckets existentes no MinIO:
+2025-07-03 16:45:06,597 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-03 16:45:06,597 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-03 16:45:06,597 - minio_datalake_app - INFO - Buckets disponíveis no MinIO:
+2025-07-03 16:45:06,597 - minio_datalake_app - INFO - - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-03 16:45:06,597 - minio_datalake_app - INFO - - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-03 16:45:06,597 - minio_datalake_app - INFO - Script para listar buckets finalizado.
+2025-07-03 16:46:10,482 - minio_datalake_app - INFO - Iniciando script para listar buckets.
+2025-07-03 16:46:10,484 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-03 16:46:10,502 - minio_datalake_app - INFO - Buckets existentes no MinIO:
+2025-07-03 16:46:10,502 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-03 16:46:10,502 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-03 16:46:10,502 - minio_datalake_app - INFO - Buckets disponíveis no MinIO:
+2025-07-03 16:46:10,502 - minio_datalake_app - INFO - - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-03 16:46:10,502 - minio_datalake_app - INFO - - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-03 16:46:10,502 - minio_datalake_app - INFO - Script para listar buckets finalizado.

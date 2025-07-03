@@ -6,20 +6,20 @@ Bem-vindo ao Data Lake local do nosso laboratório! Este guia irá ajudá-lo a c
 
 ## Sumário do Conteúdo
 
-1.  [Introdução]
-2.  [Pré-requisitos]
-3.  [Configuração Inicial]
-4.  [Acessando o Data Lake]
-      * [Via Terminal (Scripts Python)]
-      * [Via Interface Web (MinIO Console)]
-5.  [Utilizando os Scripts do Data Lake]
-      * [Listar Buckets]
-      * [Listar Conteúdo de um Bucket/Pasta]
-      * [Upload de um Arquivo]
-      * [Upload de um Diretório Completo]
-      * [Download de um Arquivo]
-      * [Ler Dataset com Pandas]
-6.  [Suporte e Dúvidas]
+1.  Introdução
+2.  Pré-requisitos
+3.  Configuração Inicial
+4.  Acessando o Data Lake
+      Via Terminal (Scripts Python)
+      Via Interface Web (MinIO Console)
+5.  Utilizando os Scripts do Data Lake
+      Listar Buckets
+      Listar Conteúdo de um Bucket/Pasta
+      Upload de um Arquivo
+      Upload de um Diretório Completo
+      Download de um Arquivo
+      Ler Dataset com Pandas
+6.  Suporte e Dúvidas
 
 -----
 
@@ -111,9 +111,10 @@ python researchers_scripts/list_bucket_contents.py datalake Comfaulda/
 # Envia para raiz do bucket
 python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv
 python researchers_scripts/upload_file.py datalake pasta/nome_arquivo
-#### **Upload de um Diretório Completo**
+```
 
 ```bash
+#Upload de um Diretório Completo
 python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
 python researchers_scripts/upload_directory.py datalake data/dataset dataset 
 ```

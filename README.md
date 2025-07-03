@@ -4,23 +4,23 @@ Este projeto estabelece um ambiente de Data Lake local utilizando o MinIO, um ar
 
 ## Sumário do Conteúdo
 
-1.  [Recursos Principais](#1-recursos-principais)
-2.  [Pré-requisitos](#2-pré-requisitos)
-3.  [Estrutura do Projeto](#3-estrutura-do-projeto)
-4.  [Configuração Inicial do Ambiente](#4-configuração-inicial-do-ambiente)
-    * [Iniciar o MinIO](#iniciar-o-minio)
-    * [Instalar Dependências Python](#instalar-dependências-python)
-    * [Configurar MinIO Client (mc)](#configurar-minio-client-mc)
-    * [Inicializar o Data Lake](#inicializar-o-data-lake)
-5.  [Uso para o Administrador do Data Lake](#5-uso-para-o-administrador-do-data-lake)
-    * [Logs de Administração](#logs-de-administração)
-    * [Sistema de Backup Interno](#sistema-de-backup-interno)
-6.  [Uso para Pesquisadores](#6-uso-para-pesquisadores)
-    * [Configurar Credenciais](#configurar-credenciais)
-    * [Scripts de Pesquisadores](#scripts-de-pesquisadores)
-7.  [Logs do Sistema](#7-logs-do-sistema)
-8.  [Considerações Finais e Próximos Passos](#8-considerações-finais-e-próximos-passos)
-9.  [Solução de Problemas Comuns](#9-solução-de-problemas-comuns)
+1.  Recursos Principais
+2.  Pré-requisitos
+3.  Estrutura do Projeto
+4.  Configuração Inicial do Ambiente
+        Iniciar o MinIO
+        Instalar Dependências Python
+        Configurar MinIO Client (mc)
+        Inicializar o Data Lake
+5.  Uso para o Administrador do Data Lake
+        Logs de Administração
+        Sistema de Backup Interno
+6.  Uso para Pesquisadores
+        Configurar Credenciais
+        Scripts de Pesquisadores
+7.  Logs do Sistema
+8.  Considerações Finais e Próximos Passos
+9.  Solução de Problemas Comuns
 
 ---
 
