@@ -1,0 +1,7 @@
+2025-07-03 16:05:22,362 - minio_datalake_app - INFO - Iniciando script de download de arquivo.
+2025-07-03 16:05:22,362 - minio_datalake_app - INFO - Tentando baixar o objeto 'meu_arquivo.csv' do bucket 'datalake'.
+2025-07-03 16:05:22,363 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-03 16:05:22,363 - minio_datalake_app - INFO - Tentando baixar 'meu_arquivo.csv' do bucket 'datalake' para '/Users/gabrielazevedo/Downloads/meu_arquivo.csv'.
+2025-07-03 16:05:22,389 - minio_datalake_app - INFO - Arquivo 'meu_arquivo.csv' do bucket 'datalake' baixado em '/Users/gabrielazevedo/Downloads/meu_arquivo.csv'.
+2025-07-03 16:05:22,390 - minio_datalake_app - INFO - Download do arquivo 'meu_arquivo.csv' do bucket 'datalake' realizado com sucesso na pasta Downloads.
+2025-07-03 16:05:22,390 - minio_datalake_app - INFO - Download de arquivo finalizado.

@@ -26,3 +26,7 @@ docker-compose up -d
 
 parar docker compose
 docker-compose down
+
+
+mc admin policy attach localminio readwrite --user amanda
+mc admin policy attach localminio readwrite --user marcio

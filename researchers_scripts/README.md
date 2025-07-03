@@ -47,7 +47,7 @@ Para começar, certifique-se de que sua máquina tenha os seguintes softwares in
 
 ```bash
 git clone git@github.com:gabrielazeved1/Iniciacao-Cientifica.git
-cd <nome_da_pasta_do_projeto>
+cd Iniciacao-Cientifica
 ```
 
 > Se você recebeu os arquivos de outra forma, apenas navegue até a pasta raiz do projeto no terminal.
@@ -109,40 +109,33 @@ python researchers_scripts/list_bucket_contents.py datalake Comfaulda/
 
 ```bash
 # Envia para raiz do bucket
-python researchers_scripts/upload_dataset.py datalake data/meu_relatorio.pdf
-
-# Envia para subpasta
-python researchers_scripts/upload_dataset.py datalake data/dados_coletados.csv meu_projeto/dados_brutos
-```
-
+python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv
+python researchers_scripts/upload_file.py datalake pasta/nome_arquivo
 #### **Upload de um Diretório Completo**
 
 ```bash
-# Upload completo da pasta com nome igual ao diretório
-python researchers_scripts/upload_directory.py datalake data/meus_dados_coletados
-
-# Upload para subpasta específica
-python researchers_scripts/upload_directory.py datalake data/resultados_finais analises/2024
+python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
+python researchers_scripts/upload_directory.py datalake data/dataset dataset 
 ```
 
 #### **Download de um Arquivo**
 
 ```bash
 # Baixar da raiz do bucket
-python researchers_scripts/download_dataset.py datalake analise_final.xlsx
+python researchers_scripts/download_file.py datalake nome_arquivo.tipo
 
 # Baixar da pasta 'projeto_X'
-python researchers_scripts/download_dataset.py datalake projeto_X/imagens/grafico_A.png
+python researchers_scripts/download_file.py datalake subpasta1/subpasta2/nome_arquivo.tipo
 ```
 
 #### **Ler Dataset com Pandas**
 
 ```bash
 # Ler CSV da raiz do bucket
-python researchers_scripts/read_dataset.py datalake dados_experimento.csv
+python researchers_scripts/read_file.py datalake nome_arquivo.tipo
 
 # Ler CSV em subpasta
-python researchers_scripts/read_dataset.py datalake projeto_Y/resultados_modelo/teste_1.csv
+python researchers_scripts/read_dataset.py datalake subpasta01/subpasta02/arquivo.tipo
 ```
 
 ### **6. Suporte e Dúvidas**

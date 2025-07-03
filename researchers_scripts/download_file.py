@@ -1,13 +1,14 @@
 import sys
 import os
 import logging # Importar o módulo logging
-from logger import setup_logging
-from minio_client import MinioClient
+
 
 # adicionar o diretório 'src' ao sys.path . -> garantir que consiga encontrar outros modulos,mesmo executando em diretorio diferente.
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(project_root, 'src'))
 
+from logger import setup_logging
+from minio_client import MinioClient
 
 #  configuração de logging 
 logger = setup_logging(log_file_name="pesquisadores_download.log")
