@@ -1,142 +1,146 @@
 # Projeto: Data Lake Local para Pesquisa com MinIO
 
-Este projeto estabelece um ambiente de Data Lake local utilizando o MinIO, um armazenamento de objetos compatível com a API S3. Ele é projetado para oferecer aos pesquisadores um acesso estruturado e controlado aos dados, permitindo operações como upload, download, listagem e leitura direta de datasets, além de um sistema de backup interno para garantir a segurança dos dados.
-
-## Sumário do Conteúdo
-
-1.  Recursos Principais
-2.  Pré-requisitos
-3.  Estrutura do Projeto
-4.  Configuração Inicial do Ambiente
-        Iniciar o MinIO
-        Instalar Dependências Python
-        Configurar MinIO Client (mc)
-        Inicializar o Data Lake
-5.  Uso para o Administrador do Data Lake
-        Logs de Administração
-        Sistema de Backup Interno
-6.  Uso para Pesquisadores
-        Configurar Credenciais
-        Scripts de Pesquisadores
-7.  Logs do Sistema
-8.  Considerações Finais e Próximos Passos
-9.  Solução de Problemas Comuns
+Este projeto estabelece um ambiente de Data Lake local utilizando o MinIO — um armazenamento de objetos compatível com a API S3. Ele fornece aos pesquisadores e ao administrador um acesso estruturado e seguro aos dados, com suporte a operações como upload, download, leitura direta e backup automatizado.
 
 ---
 
-### **1. Recursos Principais**
+## Sumário do Conteúdo
 
-* **MinIO Local:** Servidor de armazenamento de objetos compatível com S3 rodando via Docker Compose.
-* **Estrutura de Data Lake:** Buckets essenciais (`datalake`, `backup`) criados automaticamente.
-* **Scripts para Pesquisadores:** Ferramentas Python para interagir com o MinIO (upload, download, listagem, leitura).
-* **Controle de Acesso (Simplificado):** Utilização de um único conjunto de credenciais para acesso total (para este protótipo).
-* **Sistema de Logging:** Registro detalhado de todas as operações em arquivos de log dedicados.
-* **Sistema de Backup Interno:** Solução automatizada para backup dos dados do MinIO para o armazenamento local do servidor.
+1. [Recursos Principais](#1-recursos-principais)  
+2. [Pré-requisitos](#2-pré-requisitos)  
+3. [Estrutura do Projeto](#3-estrutura-do-projeto)  
+4. [Configuração Inicial do Ambiente](#4-configuração-inicial-do-ambiente)  
+5. [Uso para Administradores](#5-uso-para-administradores)  
+6. [Uso para Pesquisadores](#6-uso-para-pesquisadores)  
+7. [Logs do Sistema](#7-logs-do-sistema)  
+8. [Considerações Finais e Melhorias Futuras](#8-considerações-finais-e-melhorias-futuras)  
+9. [Solução de Problemas Comuns](#9-solução-de-problemas-comuns)
 
-### **2. Pré-requisitos**
+---
 
-Certifique-se de ter os seguintes softwares instalados em seu ambiente (no seu Mac para o protótipo, e no servidor de laboratório para produção):
+## 1. Recursos Principais
 
-* **Docker:** Para rodar o MinIO.
-    * [Instalação do Docker Desktop]
-* **Docker Compose:** Para orquestrar os serviços Docker.
-    * Geralmente vem com o Docker Desktop.
-* **Python 3.x:** Linguagem de programação para os scripts.
-    * [Instalação do Python]
-* **pip:** Gerenciador de pacotes Python (geralmente vem com o Python).
-* **MinIO Client (mc):** Ferramenta de linha de comando para interagir com o MinIO e gerenciar políticas.
-    * **No Mac (via Homebrew):** `brew install minio/stable/mc`
+- MinIO via Docker Compose  
+- Buckets essenciais pré-configurados: `datalake` e `backup`  
+- Scripts Python para pesquisadores: upload, download, leitura e listagem  
+- Autenticação simplificada por variáveis de ambiente  
+- Sistema completo de logging  
+- Backup automático com restauração fácil  
 
-### **3. Estrutura do Projeto**
-```
-├── .git/                     # Controle de versão
-├── data/                     # Opcional: Pasta para seus dados locais (entrada/saída de scripts)
-│   ├── Comfaulda/            # Exemplo de pasta de dataset
-│   ├── ensaio_componetes_mecanicos/
-│   └── stock_market_data/
-├── docs/                     # Documentação (opcional)
-├── logs/                     # Diretório para todos os arquivos de log gerados
-├── minio_configs/            # Armazena arquivos de configuração do MinIO (como políticas JSON)
-│   ├── download_policy.json
-│   └── upload_policy.json
-├── researchers_scripts/      # Scripts para uso dos pesquisadores
-│   ├── download_file.py
-│   ├── list_bucket_contents.py
-│   ├── list_buckets.py
-│   ├── read_file.py
-│   ├── upload_file.py
-│   └── upload_directory.py   # Script para upload de diretórios inteiros
-├── src/                      # Código fonte principal da aplicação
-│   ├── init.py
-│   ├── backup_datalake.py    # Script para o sistema de backup interno
-│   ├── logger.py             # Configuração centralizada de logging
-│   ├── main.py               # Script de inicialização e verificação do Data Lake
-│   └── minio_client.py       # Cliente Python para interação com MinIO
-├── .env                      # Variáveis de ambiente (opcional, para credenciais ou configs)
-├── comando.txt               # Anotações de comandos (opcional)
-├── docker-compose.yml        # Configuração do MinIO via Docker Compose
-├── README.md                 # Este arquivo
-└── requirements.txt          # Dependências Python do projeto
-```
+---
 
-### **4. Configuração Inicial do Ambiente**
+## 2. Pré-requisitos
 
-#### **Iniciar o MinIO**
+### Para todos os usuários
+
+- Python 3.x  
+- pip (gerenciador de pacotes do Python)  
+
+### Adicional para administradores
+
+- Docker e Docker Compose  
+- MinIO Client (mc)
+
+Instalação no macOS (via Homebrew):
 
 ```bash
-# Navegue até a raiz do seu projeto
+brew install minio/stable/mc
+```
+
+---
+
+## 3. Estrutura do Projeto
+
+```
+├── data/                       # Dados locais (entrada/saída)
+│   └── Comfaulda/, ensaios/, etc.
+├── docs/                       # Documentação (opcional)
+├── logs/                       # Arquivos de log (gerados automaticamente)
+├── minio_configs/              # Políticas de acesso
+│   └── upload_policy.json, download_policy.json
+├── researchers_scripts/        # Scripts de uso dos pesquisadores
+│   ├── upload_file.py
+│   ├── upload_directory.py
+│   ├── download_file.py
+│   ├── read_file.py
+│   ├── read_dataset.py
+│   └── list_datalake.py
+├── src/                        # Scripts administrativos
+│   ├── main.py                 # Inicialização do Data Lake
+│   ├── backup_datalake.py      # Sistema de backup
+│   ├── logger.py
+│   └── minio_client.py         # Wrapper Python para MinIO
+├── .env                        # Variáveis de ambiente (opcional)
+├── docker-compose.yml          # Serviço do MinIO
+├── requirements.txt            # Dependências Python
+└── README.md                   # Este arquivo
+```
+
+---
+
+## 4. Configuração Inicial do Ambiente
+
+### 4.1 Iniciar o MinIO
+
+```bash
 docker-compose up -d
 ```
 
-Acesse o painel web: [http://localhost:9001](http://localhost:9001)  
+Acesse a interface Web: [http://localhost:9001](http://localhost:9001)  
 Credenciais padrão:
 - Usuário: `minio`
 - Senha: `miniol23`
 
-#### **Instalar Dependências Python**
+---
+
+### 4.2 Instalar Dependências Python
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### **Configurar MinIO Client (mc)**
+---
+
+### 4.3 Configurar MinIO Client (mc)
 
 ```bash
 mc alias set localminio http://localhost:9000 minio miniol23
 ```
 
-#### **Inicializar o Data Lake**
+---
+
+### 4.4 Inicializar o Data Lake
 
 ```bash
 python src/main.py
 ```
 
+Isso criará os buckets principais e configurações iniciais.
+
 ---
 
-### **5. Uso para o Administrador do Data Lake**
+## 5. Uso para Administradores
 
-#### **Logs de Administração**
-
-- `logs/datalake_admin.log`
-
-#### **Sistema de Backup Interno**
-
-Executar manualmente:
+### 5.1 Executar Backup Manualmente
 
 ```bash
 python src/backup_datalake.py
 ```
 
-Automatizar via cron:
+---
+
+### 5.2 Agendar Backup com cron
 
 ```bash
 0 1 * * * /usr/bin/python3 /caminho/do/projeto/src/backup_datalake.py >> /var/log/minio_backup_cron.log 2>&1
 ```
 
-Restaurar dados (⚠️ cuidado):
+---
+
+### 5.3 Restaurar Backup
 
 ```bash
-# Restaurar bucket inteiro
+# Restaurar bucket completo
 mc mirror --overwrite /caminho/do/backup/YYYYMMDD_HHMMSS/datalake localminio/datalake
 
 # Restaurar arquivo específico
@@ -145,99 +149,107 @@ mc cp /caminho/do/backup/YYYYMMDD_HHMMSS/datalake/pasta/arquivo.csv localminio/d
 
 ---
 
-### **6. Uso para Pesquisadores**
+## 6. Uso para Pesquisadores
 
-#### **Configurar Credenciais**
+### 6.1 Autenticação
+
+Autenticar manualmente:
 
 ```bash
 export MINIO_ACCESS_KEY="minio"
 export MINIO_SECRET_KEY="miniol23"
 ```
 
----
-
-### **Scripts de Pesquisadores**
-
-Todos os scripts devem ser executados a partir da raiz do projeto (`~/projects/src/IC/`).
-
-#### 📤 `upload_file.py`
+Ou utilize o script de login:
 
 ```bash
-python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv
-python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv Comfaulda
+source researchers_scripts/login_datalake.sh SEU_USUARIO SUA_SENHA
 ```
 
-#### 📁 `upload_directory.py`
+---
+
+### 6.2 Scripts Disponíveis
+
+Execute sempre da raiz do projeto.
+
+#### Listar Buckets e Conteúdo: `list_datalake.py`
 
 ```bash
+# Listar buckets
+python researchers_scripts/list_datalake.py
+
+# Listar conteúdo de um bucket
+python researchers_scripts/list_datalake.py datalake
+
+# Listar conteúdo de uma pasta
+python researchers_scripts/list_datalake.py datalake Comfaulda/
+
+# Listar recursivamente
+python researchers_scripts/list_datalake.py datalake Comfaulda/ --recursive
+```
+
+---
+
+#### Uploads
+
+```bash
+# Upload de arquivo
+python researchers_scripts/upload_file.py datalake data/arquivo.csv
+
+# Upload com destino específico
+python researchers_scripts/upload_file.py datalake data/arquivo.csv Comfaulda
+
+# Upload de diretório
 python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
-python researchers_scripts/upload_directory.py datalake data/stock_market_data 
 ```
 
-#### 📥 `download_file.py`
+---
+
+#### Downloads
 
 ```bash
+# Baixar arquivo da raiz
 python researchers_scripts/download_file.py datalake meu_arquivo.csv
-python researchers_scripts/download_file.py datalake subpasta/documento.pdf
+
+# Baixar arquivo de subpasta
+python researchers_scripts/download_file.py datalake relatorios/2025/analise_final.csv
 ```
 
-#### 📦 `list_buckets.py`
+---
+
+#### Leitura com Pandas
 
 ```bash
-python researchers_scripts/list_buckets.py
-```
+# Ler CSV da raiz
+python researchers_scripts/read_file.py datalake arquivo.csv
 
-#### 📂 `list_bucket_contents.py`
-
-```bash
-python researchers_scripts/list_bucket_contents.py datalake
-python researchers_scripts/list_bucket_contents.py datalake Comfaulda/
-```
-
-#### 📊 `read_dataset.py`
-
-```bash
-python researchers_scripts/read_file.py datalake meu_arquivo.csv
-python researchers_scripts/read_file.py datalake analises/2025/relatorio_mensal.csv
+# Ler CSV de subpasta
+python researchers_scripts/read_dataset.py datalake relatorios/2025/analise.csv
 ```
 
 ---
 
-### **7. Logs do Sistema**
+## 7. Logs do Sistema
 
-| Caminho do Log                                 | Descrição                                                  |
-|------------------------------------------------|------------------------------------------------------------|
-| `logs/datalake_admin.log`                      | Logs da inicialização do Data Lake (`src/main.py`)         |
-| `logs/datalake_backup.log`                     | Logs do script de backup (`src/backup_datalake.py`)        |
-| `logs/pesquisadores_download.log`              | Logs de downloads de arquivos pelos pesquisadores          |
-| `logs/pesquisadores_upload.log`                | Logs de uploads de arquivos pelos pesquisadores            |
-| `logs/pesquisadores_upload_diretorio.log`      | Logs de uploads de diretórios pelos pesquisadores          |
-| `logs/pesquisadores_list_buckets.log`          | Logs da listagem de buckets                                |
-| `logs/pesquisadores_list_contents.log`         | Logs da listagem de conteúdo de buckets                    |
-| `logs/pesquisadores_read_dataset.log`          | Logs das leituras de datasets com Pandas                   |
-
----
-
-### **8. Melhorar **
-
-- Validar os scripts em diferentes sistemas operacionais.
-- Automatizar testes de integridade dos dados após backup.
-- Implementar controle de acesso mais refinado por políticas.
-- Expandir para múltiplos usuários com isolamento de dados.
+| Caminho                                     | Descrição                                        |
+|--------------------------------------------|--------------------------------------------------|
+| `logs/datalake_admin.log`                  | Inicialização do Data Lake (`src/main.py`)       |
+| `logs/datalake_backup.log`                 | Backup automatizado (`backup_datalake.py`)       |
+| `logs/pesquisadores_upload.log`            | Uploads de arquivos                              |
+| `logs/pesquisadores_upload_diretorio.log`  | Uploads de diretórios                            |
+| `logs/pesquisadores_download.log`          | Downloads realizados                             |
+| `logs/pesquisadores_list_datalake.log`     | Listagens de buckets e conteúdos (`list_datalake.py`) |
+| `logs/pesquisadores_read_dataset.log`      | Leitura de arquivos com Pandas                   |
 
 ---
 
-### **9. Solução de Problemas Comuns**
+## 8. Solução de Problemas Comuns
 
-**Problema:** Erro de autenticação no MinIO  
-**Solução:** Verifique se as variáveis de ambiente estão exportadas corretamente.
+**Erro de autenticação no MinIO**  
+Verifique se as variáveis de ambiente estão definidas corretamente.
 
-**Problema:** Bucket não encontrado  
-**Solução:** Certifique-se de rodar `main.py` para criar os buckets antes do uso.
+**Bucket não encontrado**  
+Execute `python src/main.py` para inicializar os buckets.
 
-**Problema:** Porta em uso ao iniciar o Docker  
-**Solução:** Altere as portas no `docker-compose.yml` ou pare o processo em uso.
-
----
-
-
+**Porta em uso ao iniciar o Docker**  
+Altere as portas no `docker-compose.yml` ou pare o processo que está ocupando a porta.
