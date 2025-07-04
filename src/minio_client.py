@@ -1,6 +1,6 @@
 # minio_Client.py (remova a linha logging.basicConfig)
 import os
-import logging # Mantenha este import
+import logging 
 from minio import Minio
 from minio.error import S3Error
 
@@ -10,6 +10,9 @@ o nome 'minio_datalake_app' DEVE ser o mesmo usado em setup_logging no logger.py
 """
 logger = logging.getLogger('minio_datalake_app')
 
+# src/minio_client.py
+
+
 class MinioClient:
     def __init__(self, endpoint="127.0.0.1:9000", access_key="minio", secret_key="miniol23", secure=False):
         self.client = Minio(
@@ -18,7 +21,9 @@ class MinioClient:
             secret_key=secret_key,
             secure=secure
         )
-        logger.info("MinioClient inicializado com endpoint: %s", endpoint) 
+        logger.info("MinioClient inicializado com endpoint: %s", endpoint)
+
+
 
     def upload_file(self, bucket_name: str, local_path: str, object_name: str = None, object_prefix: str = "") -> bool:
         """
@@ -40,7 +45,8 @@ class MinioClient:
             logger.info(f"Bucket '{bucket_name}' não existe. Tentando criar...")
             try:
                 self.client.make_bucket(bucket_name)
-                logger.info(f"Bucket '{bucket_name}' criado com sucesso para upload.")
+                # Log de admin/auditoria sobre a criação do bucket (INFO - vai para o arquivo)
+                logger.info(f"Bucket '{bucket_name}' criado com sucesso.") 
             except S3Error as err:
                 logger.error(f"Erro S3 ao tentar criar o bucket '{bucket_name}': {err}")
                 return False
@@ -52,14 +58,14 @@ class MinioClient:
             object_name = os.path.basename(local_path)
 
 
-        # se um prefixo for fornecido, adicione-o ao nome do objeto
         if object_prefix:
-            # garante que o prefixo termine com '/' e o nome do objeto não comece com '/'
             object_prefix = object_prefix.strip('/')
             object_name = f"{object_prefix}/{object_name}"
        
 
         try:
+            # Mensagem de INFO no log para o início da operação de upload do arquivo específico.
+            logger.info(f"Iniciando upload de '{local_path}' para '{bucket_name}/{object_name}'.")
             with open(local_path, "rb") as file_data:
                 file_size = os.path.getsize(local_path)
                 self.client.put_object(
@@ -69,6 +75,7 @@ class MinioClient:
                     length=file_size,
                     content_type="application/octet-stream"
                 )
+            # Log de sucesso final do upload do arquivo (INFO - vai para o arquivo)
             logger.info(f"Upload de '{local_path}' como '{object_name}' no bucket '{bucket_name}' realizado com sucesso.")
             return True
         except S3Error as err:
@@ -93,6 +100,7 @@ class MinioClient:
             downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
             if not os.path.exists(downloads_path):
                 os.makedirs(downloads_path)
+                # Log quando o diretório de Downloads é criado (INFO - vai para o arquivo)
                 logger.info(f"Diretório de Downloads '{downloads_path}' criado.")
 
             # define o nome do arquivo local.
@@ -101,6 +109,7 @@ class MinioClient:
             # combina o caminho da pasta Downloads com o nome do arquivo local.
             local_path = os.path.join(downloads_path, local_filename)
 
+            # Log para o início da tentativa de download (INFO - vai para o arquivo)
             logger.info(f"Tentando baixar '{object_name}' do bucket '{bucket_name}' para '{local_path}'.")
 
             # verifica se o objeto existe no MinIO antes de tentar baixá-lo.
@@ -125,7 +134,7 @@ class MinioClient:
                 for chunk in data.stream(32*1024):
                     file_data.write(chunk)
 
-            # registra sucesso no log.
+            # registra sucesso no log. (INFO - vai para o arquivo)
             logger.info(f"Arquivo '{object_name}' do bucket '{bucket_name}' baixado em '{local_path}'.")
             return True 
 
@@ -146,9 +155,11 @@ class MinioClient:
                  ou uma lista vazia em caso de erro.
         """
         try:
+            # Log para o início da consulta (INFO - vai para o arquivo)
+            logger.info("Consultando buckets existentes no MinIO.")
             buckets = self.client.list_buckets() 
-            logger.info("Buckets existentes no MinIO:")
-            # itera sobre os buckets encontrados e os registra no log.
+            # Log dos buckets encontrados (INFO - vai para o arquivo)
+            logger.info("Buckets encontrados:") 
             for bucket in buckets:
                 logger.info(f" - {bucket.name} (Criado em: {bucket.creation_date})")
             return buckets 
@@ -160,6 +171,7 @@ class MinioClient:
             # captura outros erros inesperados ao listar buckets.
             logger.error(f"Erro inesperado ao listar buckets: {e}", exc_info=True)
             return [] # retorna lista vazia em caso de erro.
+
     def list_objects_and_prefixes(self, bucket_name: str, prefix: str = "", recursive: bool = False) -> tuple[list, list]:
         """
         Lista objetos e prefixos (pastas) dentro de um bucket.
@@ -172,6 +184,7 @@ class MinioClient:
         folders = set()
         files = []
 
+        # Log para o início da operação (INFO - vai para o arquivo)
         logger.info(f"Listando conteúdo do bucket '{bucket_name}' com prefixo '{prefix}', recursivo={recursive}.")
 
         try:
@@ -190,6 +203,8 @@ class MinioClient:
                 else: # Se for um arquivo
                     files.append(obj.object_name)
 
+            # Log mais conciso sobre a quantidade de itens encontrados (INFO - vai para o arquivo)
+            logger.info(f"Conteúdo encontrado para prefixo '{prefix}': Pastas={len(folders)}, Arquivos={len(files)}.") 
             return (sorted(list(folders)), sorted(files))
 
         except Exception as e:
@@ -209,7 +224,7 @@ class MinioClient:
         """
         # verifica se o caminho local é um diretório válido.
         if not os.path.isdir(local_directory):
-            logger.error(f"Diretório local '{local_directory}' não encontrado para upload.")
+            logger.error(f"Diretório local '{local_directory}' não encontrado para upload de diretório.")
             return False
 
         # verifica se o bucket existe. se não, tenta criá-lo (mesma lógica do upload_file).
@@ -234,6 +249,7 @@ class MinioClient:
         if not minio_base_prefix:
             minio_base_prefix = os.path.basename(os.path.normpath(local_directory)) + "/"
 
+        logger.info(f"Iniciando upload recursivo do diretório '{local_directory}' para '{bucket_name}/{minio_base_prefix}'.")
         # percorre recursivamente o diretório local.
         # os.walk() gera tuplas (root, dirs, files) para cada diretório na árvore.
         for root, dirs, files in os.walk(local_directory):
@@ -247,8 +263,8 @@ class MinioClient:
                 # para garantir a formatação correta de caminhos no MinIO (que usa '/')
                 minio_object_name = os.path.join(minio_base_prefix, relative_path).replace("\\", "/")
 
-                logger.info(f"Iniciando upload de '{local_file_path}' para '{bucket_name}/{minio_object_name}'")
-                # 6. tenta fazer o upload do arquivo individual.
+                # Log detalhado POR ARQUIVO, usando DEBUG para não poluir o INFO
+                logger.debug(f"Processando arquivo para upload: '{local_file_path}' como '{minio_object_name}'.") 
                 try:
                     with open(local_file_path, "rb") as file_data:
                         file_size = os.path.getsize(local_file_path)
@@ -259,7 +275,8 @@ class MinioClient:
                             length=file_size,
                             content_type="application/octet-stream"
                         )
-                    logger.info(f"Upload de '{local_file_path}' como '{minio_object_name}' realizado com sucesso.")
+                    # Log de sucesso por arquivo (também em DEBUG)
+                    logger.debug(f"Upload de '{local_file_path}' bem-sucedido.") 
                     num_files_uploaded += 1 
                 except S3Error as err:
                     #loga erro S3 para o arquivo específico e marca o upload geral como não totalmente bem-sucedido.
@@ -272,9 +289,9 @@ class MinioClient:
                     all_successful = False
                     num_files_failed += 1 
 
-        # 7. mensagem final sobre o resultado do upload do diretório.
+        
         if all_successful:
             logger.info(f"Upload do diretório '{local_directory}' para '{bucket_name}/{minio_base_prefix}' concluído com sucesso. ({num_files_uploaded} arquivos upados).")
         else:
             logger.error(f"Upload do diretório '{local_directory}' para '{bucket_name}/{minio_base_prefix}' finalizado com erros. ({num_files_uploaded} arquivos upados, {num_files_failed} falharam).")
-        return all_successful # retorna True se tudo deu certo, False se houve alguma falha.
+        return all_successful 

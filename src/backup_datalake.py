@@ -5,7 +5,7 @@ import subprocess
 import datetime
 import shutil
 
-# Adiciona o diretório 'src' ao sys.path para importar o logger
+
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(project_root, 'src'))
 
@@ -13,15 +13,15 @@ from logger import setup_logging
 
 logger = setup_logging(log_file_name="datalake_backup.log")
 
-MINIO_ALIAS = "localminio"  # Nome do alias MinIO configurado com 'mc alias set'
+MINIO_ALIAS = "localminio"  
 
-# --- AJUSTE ESTE CAMINHO PARA O SEU MAC ---
-BACKUP_BASE_DIR = "/Users/gabrielazevedo/minio_backups" # Exemplo para Mac
-# --- FIM DO AJUSTE ---
+
+BACKUP_BASE_DIR = "/Users/gabrielazevedo/minio_backups" # meu mac
+
 
 BUCKETS_TO_BACKUP = ["datalake", "backup"]
 
-DAILY_RETENTION_DAYS = 7 # Manter backups diários por 7 dias
+DAILY_RETENTION_DAYS = 7 # mantem o backup por 7 dias, depois troca
 
 def run_mc_command(command_args, description):
     logger.info(f"Executando comando mc: {' '.join(command_args)}")
@@ -43,10 +43,10 @@ def run_mc_command(command_args, description):
 def perform_backup():
     logger.info("--- Iniciando processo de backup do Data Lake MinIO ---")
     
-    # Criar diretórios base se não existirem
+
     os.makedirs(os.path.join(BACKUP_BASE_DIR, "daily"), exist_ok=True)
 
-    # Criar um diretório para o backup diário com timestamp
+    # criar um diretório para o backup diário com timestamp
     current_timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     daily_backup_dir = os.path.join(BACKUP_BASE_DIR, "daily", current_timestamp)
     os.makedirs(daily_backup_dir, exist_ok=True)
@@ -58,7 +58,7 @@ def perform_backup():
         destination_path = os.path.join(daily_backup_dir, bucket_name)
         
         logger.info(f"Espelhando bucket '{bucket_name}' de {source_path} para {destination_path}")
-        # Usar --overwrite para garantir que a cópia seja uma imagem completa do bucket naquele timestamp
+        
         success = run_mc_command(["mc", "mirror", "--overwrite", source_path, destination_path],
                                  f"Espelhamento do bucket '{bucket_name}'")
         if not success:
@@ -66,7 +66,7 @@ def perform_backup():
 
     logger.info("--- Processo de espelhamento concluído ---")
     
-    # Executar a política de retenção
+    # executar a política de retenção
     perform_retention()
 
     if all_backups_successful:
@@ -84,7 +84,7 @@ def perform_retention():
             full_path = os.path.join(daily_dir_path, entry)
             if os.path.isdir(full_path):
                 try:
-                    # O nome do diretório deve corresponder a YYYYMMDD_HHMMSS
+
                     dir_date_str = entry.split('_')[0]
                     dir_date = datetime.datetime.strptime(dir_date_str, "%Y%m%d").date()
                     

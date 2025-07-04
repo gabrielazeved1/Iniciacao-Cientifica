@@ -19,24 +19,35 @@ def main():
     
     #verificar argumentos 
     if len(sys.argv) < 3:
-        logger.error("Uso correto: python download_file.py <bucket_name> <object_name>")
+        logger.error("Uso correto: python download_file.py <bucket_name> <object_name> [local_filename]") # Adicione [local_filename] no uso correto
+        print("Uso correto: python download_file.py <bucket_name> <object_name> [local_filename]") # Adicione [local_filename]
         sys.exit(1) 
 
     bucket = sys.argv[1]
     object_name = sys.argv[2]
+    local_filename = sys.argv[3] if len(sys.argv) > 3 else None # Captura o local_filename opcional
 
     logger.info(f"Tentando baixar o objeto '{object_name}' do bucket '{bucket}'.")
     #tratar erros
     try:
         client = MinioClient()
-        success = client.download_file(bucket, object_name)
+        success = client.download_file(bucket, object_name, local_filename) # Passa o local_filename para a função MinioClient
 
         if success:
             logger.info(f"Download do arquivo '{object_name}' do bucket '{bucket}' realizado com sucesso na pasta Downloads.")
+            # --- ADICIONADO AQUI PARA SAÍDA NO TERMINAL ---
+            print(f" Download do arquivo '{object_name}' do bucket '{bucket}' realizado com sucesso na pasta Downloads.")
+            # --- FIM DA ADIÇÃO ---
         else:
             logger.error(f"Falha no download do arquivo '{object_name}'. Verifique os logs para mais detalhes.")
+            # --- ADICIONADO AQUI PARA SAÍDA NO TERMINAL ---
+            print(f"Falha no download do arquivo '{object_name}'. Verifique os logs para mais detalhes.")
+            # --- FIM DA ADIÇÃO ---
     except Exception as e:
         logger.critical(f"Erro inesperado no script de download: {e}", exc_info=True)
+        # --- ADICIONADO AQUI PARA SAÍDA NO TERMINAL ---
+        print(f"[✖] Ocorreu um erro inesperado: {e}")
+        # --- FIM DA ADIÇÃO ---
     finally:
         logger.info("Download de arquivo finalizado.")
 

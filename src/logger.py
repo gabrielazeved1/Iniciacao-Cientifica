@@ -3,41 +3,28 @@ import os
 from datetime import datetime
 
 def setup_logging(log_file_name="app.log"):
-    """
-    Configura o log para a aplicação.
-    Os logs serão gravados no diretório 'logs/'.
-    """
-    # Constrói o caminho para o diretório 'logs' de forma robusta
-    # Ir um nível acima de 'src', e então entrar em 'logs'
     log_directory = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'logs')
-    os.makedirs(log_directory, exist_ok=True) # Garante que o diretório 'logs' exista
+    os.makedirs(log_directory, exist_ok=True)
 
     log_file_path = os.path.join(log_directory, log_file_name)
 
-    # Cria um logger
     logger = logging.getLogger('minio_datalake_app')
-    logger.setLevel(logging.INFO) # Define o nível mínimo de log
+    logger.setLevel(logging.INFO) # O nível geral do logger pode permanecer INFO (para o arquivo)
 
-    # Cria os handlers
-    # Handler para arquivo
-    file_handler = logging.FileHandler(log_file_path)
-    file_handler.setLevel(logging.INFO)
-
-    # Handler para console (para desenvolvimento/depuração)
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG) # Você pode querer uma saída mais verbosa no console
-
-    # Cria formatadores e os adiciona aos handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
-
-    # Adiciona os handlers ao logger
-    if not logger.handlers: # Evita adicionar handlers duplicados se setup_logging for chamado várias vezes
+    if not logger.handlers:
+        # File handler: Para registrar TUDO (INFO e acima) no arquivo de log
+        file_handler = logging.FileHandler(log_file_path)
+        file_handler.setLevel(logging.INFO) # Salva INFO, WARNING, ERROR, CRITICAL no arquivo
+        file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
+
+        # Console handler: Para exibir APENAS avisos, erros e mensagens críticas no terminal
+        # O DEBUG é muito verboso. Mudar para WARNING ou ERROR para menos poluição.
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.WARNING) # <-- MUDANÇA AQUI: Agora só WARNING, ERROR, CRITICAL no console
+        console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(console_formatter)
         logger.addHandler(console_handler)
 
     return logger
-
-# Você pode chamar setup_logging() aqui se quiser inicializá-lo imediatamente
-# Para uma solução mais robusta, você pode querer chamá-lo de main.py
