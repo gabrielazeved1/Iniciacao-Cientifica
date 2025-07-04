@@ -30,3 +30,18 @@ docker-compose down
 
 mc admin policy attach localminio readwrite --user amanda
 mc admin policy attach localminio readwrite --user marcio
+
+
+docker-compose up -d --build
+
+docker exec -it researcher_cli bash
+executar linux
+
+
+python researchers_scripts/list_datalake.py
+python researchers_scripts/list_datalake.py datalake "Comfaulda/Combined Faults/Unbalance_Horizontal_misalignment/Unbalance_30_g+Hor. Misalignment_0.5_mm/"
+
+
+source researchers_scripts/login_datalake.sh nome "senha"
+
+

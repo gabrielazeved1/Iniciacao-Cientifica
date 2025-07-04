@@ -1,0 +1,39 @@
+2025-07-04 11:10:25,762 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-04 11:10:25,763 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-04 11:10:25,763 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-07-04 11:10:25,781 - minio_datalake_app - INFO - Buckets existentes no MinIO:
+2025-07-04 11:10:25,781 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-04 11:10:25,781 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-04 11:10:25,781 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-07-04 11:10:38,531 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-04 11:10:38,532 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-04 11:10:38,532 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-07-04 11:10:38,547 - minio_datalake_app - ERROR - Erro S3 ao listar buckets: S3 operation failed; code: SignatureDoesNotMatch, message: The request signature we calculated does not match the signature you provided. Check your key and signing method., resource: /, request_id: 184F11B287354082, host_id: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/src/minio_client.py", line 149, in list_buckets
+    buckets = self.client.list_buckets()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/minio/api.py", line 678, in list_buckets
+    response = self._execute("GET")
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/minio/api.py", line 441, in _execute
+    return self._url_open(
+           ^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/minio/api.py", line 424, in _url_open
+    raise response_error
+minio.error.S3Error: S3 operation failed; code: SignatureDoesNotMatch, message: The request signature we calculated does not match the signature you provided. Check your key and signing method., resource: /, request_id: 184F11B287354082, host_id: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8
+2025-07-04 11:10:38,548 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-07-04 11:10:45,432 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-04 11:10:45,433 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-04 11:10:45,433 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-07-04 11:10:45,441 - minio_datalake_app - INFO - Buckets existentes no MinIO:
+2025-07-04 11:10:45,441 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-04 11:10:45,441 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-04 11:10:45,441 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-07-04 11:12:02,930 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-04 11:12:02,931 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-04 11:12:02,931 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-07-04 11:12:02,950 - minio_datalake_app - INFO - Buckets existentes no MinIO:
+2025-07-04 11:12:02,950 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-04 11:12:02,950 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-04 11:12:02,950 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.

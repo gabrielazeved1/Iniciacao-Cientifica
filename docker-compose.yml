@@ -13,9 +13,17 @@ services:
     volumes:
       - minio-data:/data
     command: server /data --console-address ":9001"
+    #restart: always
 
-    #restart: always   serve para que quando o computador inicar, o docker inicar de forma "instantanea"""
-    
+  researcher_cli:
+    container_name: researcher_cli
+    image: python:3.9-slim-buster
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: tail -f /dev/null 
+    depends_on:
+      - minio
 
 volumes:
   minio-data:

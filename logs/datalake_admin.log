@@ -1,7 +1,0 @@
-2025-07-03 15:38:19,679 - minio_datalake_app - INFO - Iniciando a verificação e configuração do ambiente do Data Lake.
-2025-07-03 15:38:19,681 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
-2025-07-03 15:38:19,703 - minio_datalake_app - INFO - Conexão com MinIO estabelecida com sucesso.
-2025-07-03 15:38:19,708 - minio_datalake_app - INFO - Bucket 'datalake' já existe. Ok.
-2025-07-03 15:38:19,711 - minio_datalake_app - INFO - Bucket 'backup' já existe. Ok.
-2025-07-03 15:38:19,711 - minio_datalake_app - INFO - Verificação e configuração do ambiente do Data Lake concluída.
-2025-07-03 15:38:19,711 - minio_datalake_app - INFO - Processo de inicialização do ambiente finalizado.

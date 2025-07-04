@@ -160,6 +160,41 @@ class MinioClient:
             # captura outros erros inesperados ao listar buckets.
             logger.error(f"Erro inesperado ao listar buckets: {e}", exc_info=True)
             return [] # retorna lista vazia em caso de erro.
+    def list_objects_and_prefixes(self, bucket_name: str, prefix: str = "", recursive: bool = False) -> tuple[list, list]:
+        """
+        Lista objetos e prefixos (pastas) dentro de um bucket.
+
+        :param bucket_name: Nome do bucket.
+        :param prefix: Prefixo para filtrar os objetos (simula subpastas).
+        :param recursive: Se True, lista recursivamente todo o conteúdo do prefixo.
+        :return: Uma tupla contendo duas listas: (pastas, arquivos).
+        """
+        folders = set()
+        files = []
+
+        logger.info(f"Listando conteúdo do bucket '{bucket_name}' com prefixo '{prefix}', recursivo={recursive}.")
+
+        try:
+            # Verifica se o bucket existe antes de tentar listar
+            if not self.client.bucket_exists(bucket_name):
+                logger.warning(f"O bucket '{bucket_name}' não existe. Não é possível listar o conteúdo.")
+                return ([], [])
+
+            # O método list_objects do MinIO já retorna objetos com 'is_dir=True' para pastas (common prefixes)
+            # quando recursive=False.
+            objects = self.client.list_objects(bucket_name, prefix=prefix, recursive=recursive)
+
+            for obj in objects:
+                if obj.is_dir: # Se for um diretório (prefixo comum)
+                    folders.add(obj.object_name)
+                else: # Se for um arquivo
+                    files.append(obj.object_name)
+
+            return (sorted(list(folders)), sorted(files))
+
+        except Exception as e:
+            logger.error(f"Erro ao listar conteúdo do bucket '{bucket_name}' com prefixo '{prefix}': {e}", exc_info=True)
+            return ([], [])
 
     def upload_directory(self, bucket_name: str, local_directory: str, minio_base_prefix: str = "") -> bool:
         """

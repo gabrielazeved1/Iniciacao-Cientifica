@@ -65,6 +65,72 @@ O Data Lake MinIO está rodando no servidor de laboratório (IP: `192.168.18.31`
 #### **Via Terminal (Scripts Python)**
 
 1.  **Defina Suas Credenciais:**
+# Guia de Acesso ao Data Lake MinIO
+
+Este documento explica as duas principais formas de interagir com o Data Lake MinIO do nosso laboratório: através da interface web visual (MinIO Console) e via linha de comando (terminal) usando scripts Python. Também detalha como configurar seu ambiente para usar os scripts, explicando por que um script shell é essencial para o "login".
+
+---
+
+## 1. Acesso via Interface Web (MinIO Console)
+
+Este modo de acesso permite interagir com o Data Lake de forma visual, usando seu navegador de internet.
+
+* **O que é:** Uma interface gráfica de usuário (GUI) fornecida pelo MinIO para gerenciar seus dados e buckets visualmente.
+* **Como Acessar:**
+    1.  Abra seu navegador de internet.
+    2.  Vá para o endereço: `http://192.168.18.31:9001` (Este é o endereço IP do servidor onde o MinIO está rodando, na porta da interface web).
+    3.  Na tela de login, insira suas credenciais (usuário e senha) fornecidas a você.
+* **Quando Usar:**
+    * Para uma **exploração rápida** do conteúdo dos buckets.
+    * Para **uploads ou downloads pontuais** de arquivos, arrastando e soltando.
+    * Para **gerenciamento visual** de buckets (se você tiver permissões para isso).
+    * Ideal para usuários que preferem uma interface gráfica e não têm conhecimento de linha de comando.
+* **Vantagens:** Intuitivo, visual, fácil de usar.
+* **Desvantagens:** Não permite automação complexa ou integração direta com fluxos de trabalho de código.
+
+---
+
+## 2. Acesso via Terminal (Scripts Python)
+
+Este modo permite interagir com o Data Lake de forma programática, usando scripts Python na linha de comando.
+
+* **O que é:** Um conjunto de scripts Python (`.py`) localizados na pasta `researchers_scripts/` do projeto, projetados para automatizar e facilitar operações com o MinIO.
+* **Como Funciona:** Você executa um comando no terminal que dispara um script Python. Este script usa a biblioteca `minio` (através do `MinioClient`) para se comunicar diretamente com a API do servidor MinIO e realizar tarefas como upload, download, listagem e leitura de dados para análise.
+* **Quando Usar:**
+    * Para **automação de tarefas repetitivas** (ex: upload de múltiplos arquivos de uma vez).
+    * Para **integração com fluxos de trabalho de dados** baseados em código (ex: carregar dados diretamente para um DataFrame do Pandas para análise).
+    * Para usuários que preferem controle programático e querem integrar o Data Lake em seus processos de pesquisa e desenvolvimento.
+* **Vantagens:** Poderoso, flexível, programável, permite automação, todas as ações são registradas em logs.
+* **Desvantagens:** Requer conhecimento básico de linha de comando e Python.
+
+---
+
+## 3. Fazendo o "Login" para os Scripts: Por que `login_datalake.sh` (e não Python)
+
+Para que seus scripts Python possam se conectar ao MinIO, eles precisam de suas credenciais (nome de usuário e senha). A forma mais segura e flexível de fornecer isso é através de **variáveis de ambiente**.
+
+Anteriormente, pedíamos para você usar comandos `export` diretamente no terminal. Agora, temos um script dedicado para isso: `login_datalake.sh`.
+
+* **O Problema (Por que um script Python não serve diretamente para o "login"):**
+    * Em sistemas operacionais, quando você executa um script Python (ou qualquer outro programa), ele roda como um "processo filho" do seu terminal (o "processo pai").
+    * Um processo filho **não pode alterar as variáveis de ambiente do seu processo pai (o terminal) de forma permanente**. Quando o script Python termina, todas as variáveis que ele definiu internamente "morrem" com ele. Se você tentasse um `export` dentro de um `.py` e depois fechasse o Python, a variável não estaria mais lá para o próximo comando no terminal.
+
+* **Como o Script Shell (`.sh`) Resolve Isso (O Poder do `source`):**
+    * Um script shell (`.sh`) é diferente. Quando você o executa com o comando `source` (ex: `source meu_script.sh`), o shell **executa os comandos do script como se você os estivesse digitando diretamente no seu terminal**.
+    * Isso significa que qualquer comando `export` dentro do script shell **afeta diretamente o ambiente do seu terminal atual**, e as variáveis de ambiente (`MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`) permanecem definidas até que você feche o terminal ou as altere.
+
+* **Vantagens de Usar `login_datalake.sh`:**
+    * **Conveniência:** Um único comando (`source researchers_scripts/login_datalake.sh SEU_USUARIO SUA_SENHA`) em vez de várias linhas `export`.
+    * **Padronização:** Garante que as variáveis sejam sempre definidas corretamente.
+    * **Extensibilidade:** O administrador pode adicionar mais variáveis (ex: um `MINIO_ENDPOINT` futuro) no script, e você só precisa continuar usando o mesmo comando `source`.
+    * **Mensagens Amigáveis:** O script fornece feedback claro de que o login foi bem-sucedido.
+
+**Exemplo de Como Usar o Script de Login:**
+
+Para configurar suas credenciais no terminal:
+
+```bash
+source researchers_scripts/login_datalake.sh SEU_USUARIO SUA_SENHA
 
 ```bash
 export MINIO_ACCESS_KEY="SEU_USUARIO"
