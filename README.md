@@ -54,10 +54,8 @@ brew install minio/stable/mc
 ```
 ├── data/                       # Dados locais (entrada/saída)
 │   └── Comfaulda/, ensaios/, etc.
-├── docs/                       # Documentação (opcional)
+├── docs/                       # Documentação 
 ├── logs/                       # Arquivos de log (gerados automaticamente)
-├── minio_configs/              # Políticas de acesso
-│   └── upload_policy.json, download_policy.json
 ├── researchers_scripts/        # Scripts de uso dos pesquisadores
 │   ├── upload_file.py
 │   ├── upload_directory.py
@@ -70,7 +68,6 @@ brew install minio/stable/mc
 │   ├── backup_datalake.py      # Sistema de backup
 │   ├── logger.py
 │   └── minio_client.py         # Wrapper Python para MinIO
-├── .env                        # Variáveis de ambiente (opcional)
 ├── docker-compose.yml          # Serviço do MinIO
 ├── requirements.txt            # Dependências Python
 └── README.md                   # Este arquivo
@@ -129,15 +126,7 @@ python src/backup_datalake.py
 
 ---
 
-### 5.2 Agendar Backup com cron
-
-```bash
-0 1 * * * /usr/bin/python3 /caminho/do/projeto/src/backup_datalake.py >> /var/log/minio_backup_cron.log 2>&1
-```
-
----
-
-### 5.3 Restaurar Backup
+### 5.2 Restaurar Backup
 
 ```bash
 # Restaurar bucket completo

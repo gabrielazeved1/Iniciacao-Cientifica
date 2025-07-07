@@ -19,8 +19,8 @@ def main():
     
     #verificar se tem os 3 argumentos necessarios
     if len(sys.argv) < 3:
-        logger.error("Uso correto: python download_file.py <bucket_name> <object_name> [local_filename]") # Adicione [local_filename] no uso correto
-        print("Uso correto: python download_file.py <bucket_name> <object_name> [local_filename]") # Adicione [local_filename]
+        logger.error("Uso correto: python download_file.py <bucket_name> <object_name> [local_filename]") 
+        print("Uso correto: python download_file.py <bucket_name> <object_name> [local_filename]") 
         sys.exit(1) 
 
     bucket = sys.argv[1]
@@ -31,7 +31,7 @@ def main():
     #tratar erros
     try:
         client = MinioClient()
-        success = client.download_file(bucket, object_name, local_filename) # Passa o local_filename para a função MinioClient
+        success = client.download_file(bucket, object_name, local_filename) 
 
         if success:
             logger.info(f"Download do arquivo '{object_name}' do bucket '{bucket}' realizado com sucesso na pasta Downloads.")

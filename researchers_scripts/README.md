@@ -1,6 +1,6 @@
 # Guia do Pesquisador: Acessando o Data Lake Local
 
-Bem-vindo ao Data Lake local do nosso laboratório! Este guia irá ajudá-lo a configurar seu ambiente, conectar-se ao sistema MinIO e utilizar os scripts fornecidos para interagir com os dados de forma simples e eficiente.
+Bem-vindo ao Data Lake local! Este guia irá ajudá-lo a configurar seu ambiente, conectar-se ao sistema MinIO e utilizar os scripts fornecidos para interagir com os dados de forma simples e eficiente.
 
 ---
 
@@ -65,12 +65,12 @@ pip install -r requirements.txt
 
 ## **4. Acessando o Data Lake**
 
-O Data Lake MinIO está hospedado no IP `192.168.18.31`. Você pode acessá-lo por:
+O Data Lake MinIO está hospedado no IP `127.0.0.1:9001`. Você pode acessá-lo por:
 
 ### ### **Acesso via Interface Web (MinIO Console)**
 
 1. Acesse pelo navegador:  
-   `http://192.168.18.31:9001`
+   `http://127.0.0.1:9001`
 
 2. Insira suas credenciais fornecidas.
 
@@ -138,7 +138,7 @@ python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv
 
 ```bash
 # Enviar um diretório completo
-python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
+python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda_nome_novo.
 ```
 
 ---

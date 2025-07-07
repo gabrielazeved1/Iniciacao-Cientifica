@@ -1,2 +1,2 @@
-minio==7.1.1  # Biblioteca oficial para interagir com o MinIO
-pandas==2.2.2 # Para manipulação de dados, usada no read_dataset.py
+minio==7.1.1  
+pandas==2.2.2 

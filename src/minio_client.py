@@ -88,20 +88,19 @@ class MinioClient:
 
     def download_file(self, bucket_name: str, object_name: str, local_filename: str = None) -> bool:
         """
-        faz o download de um objeto=arquivo do MinIO para um arquivo local
+        faz o download de um objeto do MinIO para um arquivo local.
 
         bucket_name: O nome do bucket onde o objeto está.
-        object_name: O nome do objeto no MinIO a ser baixado. -> nome do arquivo que deseja baixar
-        local_filename: O nome do arquivo local a ser salvo. Se None, usa o object_name (Opcional.)
+        object_name: O nome do objeto no MinIO a ser baixado.
+        local_filename: O nome do arquivo local a ser salvo. Se None, usa o object_name.
         return: True se o download for bem-sucedido, False caso contrário.
         """
         try:
             # define o caminho para a pasta 'Downloads' do usuário.
-            # os.path.expanduser("~") expande para o diretório home do usuário.
             downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
+            # Garante que a pasta Downloads exista
             if not os.path.exists(downloads_path):
                 os.makedirs(downloads_path)
-                # Log quando o diretório de Downloads é criado (INFO - vai para o arquivo)
                 logger.info(f"Diretório de Downloads '{downloads_path}' criado.")
 
             # define o nome do arquivo local.
@@ -110,43 +109,42 @@ class MinioClient:
             # combina o caminho da pasta Downloads com o nome do arquivo local.
             local_path = os.path.join(downloads_path, local_filename)
 
-            # Log para o início da tentativa de download 
+            
+            local_file_directory = os.path.dirname(local_path)
+            if not os.path.exists(local_file_directory):
+                os.makedirs(local_file_directory, exist_ok=True)
+                logger.info(f"Diretório local para download criado: '{local_file_directory}'.")
+            
+
             logger.info(f"Tentando baixar '{object_name}' do bucket '{bucket_name}' para '{local_path}'.")
 
             # verifica se o objeto existe no MinIO antes de tentar baixá-lo.
             try:
                 self.client.stat_object(bucket_name, object_name)
             except S3Error as err:
-                # se o erro for "NoSuchKey", significa que o objeto não existe.
                 if err.code == "NoSuchKey":
                     logger.error(f"Objeto '{object_name}' não encontrado no bucket '{bucket_name}'.")
                 else:
-                    # Outros erros S3 ao verificar o objeto.
                     logger.error(f"Erro S3 ao verificar objeto '{object_name}': {err}")
-                return False # Indica falha porque o objeto não foi encontrado ou houve outro erro.
+                return False
 
             # obtém o objeto do MinIO.
-            # data será um objeto de fluxo (stream) do qual você pode ler os dados do arquivo.
             data = self.client.get_object(bucket_name, object_name)
 
             # salva os dados do objeto no arquivo local.
             with open(local_path, "wb") as file_data:
-                # itera sobre o fluxo de dados em blocos de 32KB para economizar memória e lidar com arquivos grandes de forma eficiente.
                 for chunk in data.stream(32*1024):
                     file_data.write(chunk)
 
-            # registra sucesso no log. (INFO - vai para o arquivo)
             logger.info(f"Arquivo '{object_name}' do bucket '{bucket_name}' baixado em '{local_path}'.")
             return True 
 
         except S3Error as err:
-            # captura erros específicos da API S3 durante o download.
             logger.error(f"Erro S3 no download de '{object_name}' do bucket '{bucket_name}': {err}", exc_info=True)
-            return False # indica falha no download.
+            return False
         except Exception as e:
-            # captura outros erros inesperados durante o download.
             logger.error(f"Erro inesperado no download de '{object_name}': {e}", exc_info=True)
-            return False # indica falha no download.
+            return False
 
     def list_buckets(self):
         """
