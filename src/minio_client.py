@@ -1,18 +1,18 @@
-# minio_Client.py (remova a linha logging.basicConfig)
 import os
 import logging 
 from minio import Minio
 from minio.error import S3Error
 
 """
-o nome 'minio_datalake_app' DEVE ser o mesmo usado em setup_logging no logger.py
-é garantido  que todas as mensagens desta classe sejam direcionadas para o logger GLOBAL 
+minio_client.py
+aqui tem a classe do Minio_Client que sera instanciada e as funcoes principais do codigo
+upload(diretorio e arquivos), downloads (diretorio e arquivos), list (diretorio e arquivos)
+
+
 """
 logger = logging.getLogger('minio_datalake_app')
 
-# src/minio_client.py
-
-
+#classe que sera instancianda no main.py(aqui esta o ip, e login)
 class MinioClient:
     def __init__(self, endpoint="127.0.0.1:9000", access_key="minio", secret_key="miniol23", secure=False):
         self.client = Minio(
@@ -30,22 +30,22 @@ class MinioClient:
         faz o upload de um arquivo local para um bucket no MinIO.
         -bucket_name: O nome do bucket de destino no MinIO.
         -local_path: O caminho completo do arquivo local a ser upado.
-        - object_name: Opcional. O nome do objeto no MinIO. Se None, usa o nome base do arquivo local.
-        - object_prefix: Opcional. Um prefixo para adicionar ao nome do objeto no MinIO (simula pastas).
+        - object_name:O nome do objeto no MinIO. Se None, usa o nome base do arquivo local. (Opcional)
+        - object_prefix:Um prefixo para adicionar ao nome do objeto no MinIO (simula pastas). (Opcional)
         -return: True se o upload for bem-sucedido, False caso contrário.
         primeiro verifica se o arquivo local para upload existe
         depois verifica se o bucket existe
         se nao ha especificacao do nome do objeto -> objeto=nomearquivo
         """
+        #verifica o se existe o arquivo local
         if not os.path.isfile(local_path):
             logger.error(f"Arquivo '{local_path}' não encontrado para upload.")
             return False
-
+        #verifica se existe o buckt, no qual estou tentando mandar
         if not self.client.bucket_exists(bucket_name):
             logger.info(f"Bucket '{bucket_name}' não existe. Tentando criar...")
             try:
                 self.client.make_bucket(bucket_name)
-                # Log de admin/auditoria sobre a criação do bucket (INFO - vai para o arquivo)
                 logger.info(f"Bucket '{bucket_name}' criado com sucesso.") 
             except S3Error as err:
                 logger.error(f"Erro S3 ao tentar criar o bucket '{bucket_name}': {err}")
@@ -53,11 +53,12 @@ class MinioClient:
             except Exception as e:
                 logger.error(f"Erro inesperado ao criar o bucket '{bucket_name}': {e}")
                 return False
-
+        #mudar nome do arquivo, (opcional)
         if object_name is None:
             object_name = os.path.basename(local_path)
 
-
+        #colocar prefixo (opcional) ->simulacao de subpastas
+        
         if object_prefix:
             object_prefix = object_prefix.strip('/')
             object_name = f"{object_prefix}/{object_name}"
@@ -87,11 +88,11 @@ class MinioClient:
 
     def download_file(self, bucket_name: str, object_name: str, local_filename: str = None) -> bool:
         """
-        faz o download de um objeto do MinIO para um arquivo local.
+        faz o download de um objeto=arquivo do MinIO para um arquivo local
 
         bucket_name: O nome do bucket onde o objeto está.
-        object_name: O nome do objeto no MinIO a ser baixado.
-        local_filename: Opcional. O nome do arquivo local a ser salvo. Se None, usa o object_name.
+        object_name: O nome do objeto no MinIO a ser baixado. -> nome do arquivo que deseja baixar
+        local_filename: O nome do arquivo local a ser salvo. Se None, usa o object_name (Opcional.)
         return: True se o download for bem-sucedido, False caso contrário.
         """
         try:
@@ -109,7 +110,7 @@ class MinioClient:
             # combina o caminho da pasta Downloads com o nome do arquivo local.
             local_path = os.path.join(downloads_path, local_filename)
 
-            # Log para o início da tentativa de download (INFO - vai para o arquivo)
+            # Log para o início da tentativa de download 
             logger.info(f"Tentando baixar '{object_name}' do bucket '{bucket_name}' para '{local_path}'.")
 
             # verifica se o objeto existe no MinIO antes de tentar baixá-lo.
@@ -174,14 +175,14 @@ class MinioClient:
 
     def list_objects_and_prefixes(self, bucket_name: str, prefix: str = "", recursive: bool = False) -> tuple[list, list]:
         """
-        Lista objetos e prefixos (pastas) dentro de um bucket.
+        lista objetos e prefixos (pastas) dentro de um bucket.
 
-        :param bucket_name: Nome do bucket.
-        :param prefix: Prefixo para filtrar os objetos (simula subpastas).
-        :param recursive: Se True, lista recursivamente todo o conteúdo do prefixo.
+        bucket_name: Nome do bucket.
+        prefix: Prefixo para filtrar os objetos (simula subpastas).
+        recursive: Se True, lista recursivamente todo o conteúdo do prefixo.
         :return: Uma tupla contendo duas listas: (pastas, arquivos).
         """
-        folders = set()
+        folders = set() # nao armaenar a mesma pasta 2x
         files = []
 
         # Log para o início da operação (INFO - vai para o arquivo)
@@ -203,7 +204,6 @@ class MinioClient:
                 else: # Se for um arquivo
                     files.append(obj.object_name)
 
-            # Log mais conciso sobre a quantidade de itens encontrados (INFO - vai para o arquivo)
             logger.info(f"Conteúdo encontrado para prefixo '{prefix}': Pastas={len(folders)}, Arquivos={len(files)}.") 
             return (sorted(list(folders)), sorted(files))
 
@@ -219,7 +219,7 @@ class MinioClient:
 
         bucket_name: Nome do bucket no MinIO onde os arquivos serão upados.
         local_directory: caminho completo do diretório local a ser upado.
-        minio_base_prefix: opcional. o prefixo (caminho virtual de pasta) no MinIO para os arquivos.
+        minio_base_prefix:  o prefixo (caminho virtual de pasta) no MinIO para os arquivos.(opcional.)
         return: True se TODOS os uploads forem bem-sucedidos, False caso um ou mais arquivos falhem.
         """
         # verifica se o caminho local é um diretório válido.

@@ -19,10 +19,8 @@ def setup_logging(log_file_name="app.log"):
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
 
-        # Console handler: Para exibir APENAS avisos, erros e mensagens críticas no terminal
-        # O DEBUG é muito verboso. Mudar para WARNING ou ERROR para menos poluição.
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.WARNING) # <-- MUDANÇA AQUI: Agora só WARNING, ERROR, CRITICAL no console
+        console_handler.setLevel(logging.WARNING) # só WARNING, ERROR, CRITICAL no console
         console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         console_handler.setFormatter(console_formatter)
         logger.addHandler(console_handler)

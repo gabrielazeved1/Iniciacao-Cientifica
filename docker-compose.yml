@@ -15,16 +15,6 @@ services:
     command: server /data --console-address ":9001"
     #restart: always
 
-  researcher_cli:
-    container_name: researcher_cli
-    image: python:3.9-slim-buster
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: tail -f /dev/null 
-    depends_on:
-      - minio
-
 volumes:
   minio-data:
     name: projects_minio-data

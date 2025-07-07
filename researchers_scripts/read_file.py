@@ -21,7 +21,7 @@ def read_csv_from_minio(bucket_name, file_path):
         "key": "minio",
         "secret": "miniol23",
         "client_kwargs": {"endpoint_url": "http://localhost:9000"},
-    }
+    } #verificar!!!
     try:
         df = pd.read_csv(s3_path, storage_options=storage_options)
         logger.info(f"Arquivo '{file_path}' lido com sucesso do bucket '{bucket_name}'.")

@@ -1,4 +1,3 @@
-#researcher_scripts/list_datalake.py
 import sys
 import os
 import logging
@@ -27,7 +26,7 @@ def print_usage():
 def main():
     logger.info("Iniciando script de exploração do Data Lake.")
 
-    # Obter credenciais das variáveis de ambiente (como em outros scripts de pesquisador)
+    # obter credenciais das variáveis de ambiente 
     access_key = os.environ.get("MINIO_ACCESS_KEY")
     secret_key = os.environ.get("MINIO_SECRET_KEY")
 
@@ -38,20 +37,20 @@ def main():
 
     client = MinioClient(access_key=access_key, secret_key=secret_key)
     
-    # Analisar os argumentos da linha de comando
+    # verificar parametros!
     num_args = len(sys.argv)
     
-    # Comandos como --recursive
+    # --recursive
     recursive_flag = False
     if "--recursive" in sys.argv:
         recursive_flag = True
-        sys.argv.remove("--recursive") # Remove a flag para não atrapalhar a contagem de args
-        num_args = len(sys.argv) # Atualiza a contagem
+        sys.argv.remove("--recursive") # eemove a flag para não atrapalhar a contagem de args
+        num_args = len(sys.argv) # atualiza a contagem
 
-    if num_args == 1: # Apenas o nome do script (explore_datalake.py)
-        # Listar todos os buckets
+    if num_args == 1: # apenas o nome do script (list_datalake.py)
+        # listar todos os buckets
         logger.info("Listando todos os buckets.")
-        buckets = client.list_buckets() # Reutiliza o método existente
+        buckets = client.list_buckets() # reutiliza o método existente
         if buckets:
             print("\nBuckets disponíveis:")
             for b in buckets:
@@ -59,7 +58,7 @@ def main():
         else:
             print("\nNenhum bucket disponível ou erro ao listar.")
 
-    elif num_args >= 2 and num_args <= 3: # explore_datalake.py <bucket_name> [prefixo]
+    elif num_args >= 2 and num_args <= 3: # list_datalake.py <bucket_name> [prefixo]
         bucket_name = sys.argv[1]
         prefix = sys.argv[2] if num_args == 3 else ""
         
@@ -87,7 +86,7 @@ def main():
         if not folders and not files:
             print("  Conteúdo vazio ou prefixo não encontrado.")
 
-    else: # Uso inválido
+    else: # uso inválido
         print_usage()
         sys.exit(1)
 

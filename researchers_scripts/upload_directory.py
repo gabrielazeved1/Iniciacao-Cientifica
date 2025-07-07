@@ -13,21 +13,22 @@ logger = setup_logging(log_file_name="pesquisadores_upload_diretorio.log")
 
 def main():
     logger.info("Iniciando script de upload de diretório.")
-
+#verificar se tem no minimo 3 parametros
     if len(sys.argv) < 3:
         logger.error("Uso correto: python upload_directory.py <bucket_name> <caminho_diretorio_local> [prefixo_minio_opcional]")
-        print("Uso correto: python upload_directory.py <bucket_name> <caminho_diretorio_local> [prefixo_minio_opcional]") # Adicionado
+        print("Uso correto: python upload_directory.py <bucket_name> <caminho_diretorio_local> [prefixo_minio_opcional]") 
         sys.exit(1)
 
     bucket_name = sys.argv[1]
     local_directory = sys.argv[2]
     minio_prefix = sys.argv[3] if len(sys.argv) > 3 else ""
 
-    print(f"Tentando fazer upload do diretório '{os.path.basename(local_directory)}' para o bucket '{bucket_name}' na pasta '{minio_prefix or '/'}'.") # Adicionado
+    print(f"Tentando fazer upload do diretório '{os.path.basename(local_directory)}' para o bucket '{bucket_name}' na pasta '{minio_prefix or '/'}'.") 
 
     try:
         client = MinioClient()
-        success = client.upload_directory(bucket_name, local_directory, minio_prefix)
+        success = client.upload_directory(bucket_name, local_directory, minio_prefix) #chamada da instancia
+        
 
         if success:
             logger.info(f"Diretório '{local_directory}' enviado para o bucket '{bucket_name}' com sucesso.")

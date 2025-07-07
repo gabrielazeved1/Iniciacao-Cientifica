@@ -18,7 +18,7 @@ def main():
     # colocar 3 ou 4 argumentos (script, bucket, arquivo, [prefixo])
     if len(sys.argv) < 3:
         logger.error("Uso correto: python upload_file.py <bucket_name> <caminho_arquivo_local> [pasta_destino_no_bucket]")
-        print("Uso correto: python upload_file.py <bucket_name> <caminho_arquivo_local> [pasta_destino_no_bucket]") # Adicionado para terminal
+        print("Uso correto: python upload_file.py <bucket_name> <caminho_arquivo_local> [pasta_destino_no_bucket]") 
         sys.exit(1)
 
     bucket_name = sys.argv[1]
@@ -28,7 +28,7 @@ def main():
 
     # log da tentativa de upload
     logger.info(f"Tentando fazer upload do arquivo '{file_path}' para o bucket '{bucket_name}' na pasta '{object_prefix}'.")
-    # Adicionado para terminal
+    
     print(f"Tentando fazer upload do arquivo '{os.path.basename(file_path)}' para o bucket '{bucket_name}' na pasta '{object_prefix or '/'}'.")
 
 

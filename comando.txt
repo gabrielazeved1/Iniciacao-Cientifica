@@ -45,6 +45,7 @@ python researchers_scripts/list_datalake.py datalake "Comfaulda/Combined Faults/
 source researchers_scripts/login_datalake.sh nome "senha"
 
 
+
 teste:
 docker-compose down # Desliga e remove os contêineres antigos
 docker-compose up -d --build # Sobe os contêineres em background.
@@ -52,6 +53,6 @@ docker-compose up -d --build # Sobe os contêineres em background.
 acessar terminal do conteiner:
 docker exec -it researcher_cli bash
 pip install -r requirements.txt
-source researchers_scripts/login_datalake.sh usuario senha
+source researchers_scripts/login_datalake.sh marcio marcio123 minio-server:9000
 
 rodar scripts!!!
