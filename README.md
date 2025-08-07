@@ -242,3 +242,8 @@ Execute `python src/main.py` para inicializar os buckets.
 
 **Porta em uso ao iniciar o Docker**  
 Altere as portas no `docker-compose.yml` ou pare o processo que está ocupando a porta.
+
+
+
+fazer uma apii
+em que eles vao buscar os dados em uma url
