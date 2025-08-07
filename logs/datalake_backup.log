@@ -1,0 +1,12 @@
+2025-07-25 09:49:48,010 - minio_datalake_app - INFO - --- Iniciando processo de backup do Data Lake MinIO ---
+2025-07-25 09:49:48,010 - minio_datalake_app - INFO - Diretório de backup diário criado: /Users/gabrielazevedo/minio_backups/daily/20250725_094948
+2025-07-25 09:49:48,010 - minio_datalake_app - INFO - Espelhando bucket 'datalake' de localminio/datalake para /Users/gabrielazevedo/minio_backups/daily/20250725_094948/datalake
+2025-07-25 09:49:48,010 - minio_datalake_app - INFO - Executando comando mc: mc mirror --overwrite localminio/datalake /Users/gabrielazevedo/minio_backups/daily/20250725_094948/datalake
+2025-07-25 09:50:00,236 - minio_datalake_app - INFO - Espelhamento do bucket 'datalake' sucesso.
+2025-07-25 09:50:00,237 - minio_datalake_app - INFO - Espelhando bucket 'backup' de localminio/backup para /Users/gabrielazevedo/minio_backups/daily/20250725_094948/backup
+2025-07-25 09:50:00,237 - minio_datalake_app - INFO - Executando comando mc: mc mirror --overwrite localminio/backup /Users/gabrielazevedo/minio_backups/daily/20250725_094948/backup
+2025-07-25 09:50:00,286 - minio_datalake_app - INFO - Espelhamento do bucket 'backup' sucesso.
+2025-07-25 09:50:00,287 - minio_datalake_app - INFO - --- Processo de espelhamento concluído ---
+2025-07-25 09:50:00,287 - minio_datalake_app - INFO - Iniciando política de retenção de backups.
+2025-07-25 09:50:00,291 - minio_datalake_app - INFO - Política de retenção concluída.
+2025-07-25 09:50:00,291 - minio_datalake_app - INFO - --- Backup do Data Lake concluído com SUCESSO ---

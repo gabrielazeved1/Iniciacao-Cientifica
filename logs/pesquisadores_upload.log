@@ -1,0 +1,14 @@
+2025-07-25 09:48:36,588 - minio_datalake_app - INFO - Iniciando script de upload do arquivo.
+2025-07-25 09:48:36,588 - minio_datalake_app - INFO - Tentando fazer upload do arquivo 'data/meu_arquivo.csv' para o bucket 'datalake' na pasta 'testes/'.
+2025-07-25 09:48:36,589 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-25 09:48:36,599 - minio_datalake_app - INFO - Iniciando upload de 'data/meu_arquivo.csv' para 'datalake/testes/meu_arquivo.csv'.
+2025-07-25 09:48:36,605 - minio_datalake_app - INFO - Upload de 'data/meu_arquivo.csv' como 'testes/meu_arquivo.csv' no bucket 'datalake' realizado com sucesso.
+2025-07-25 09:48:36,605 - minio_datalake_app - INFO - Arquivo 'data/meu_arquivo.csv' enviado como 'testes/meu_arquivo.csv' para o bucket 'datalake' com sucesso.
+2025-07-25 09:48:36,605 - minio_datalake_app - INFO - Script de upload do arquivo finalizado.
+2025-08-07 16:48:35,720 - minio_datalake_app - INFO - Iniciando script de upload do arquivo.
+2025-08-07 16:48:35,720 - minio_datalake_app - INFO - Tentando fazer upload do arquivo 'data/analise_vendas.csv' para o bucket 'datalake' na pasta ''.
+2025-08-07 16:48:35,721 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-08-07 16:48:35,743 - minio_datalake_app - INFO - Iniciando upload de 'data/analise_vendas.csv' para 'datalake/analise_vendas.csv'.
+2025-08-07 16:48:35,748 - minio_datalake_app - INFO - Upload de 'data/analise_vendas.csv' como 'analise_vendas.csv' no bucket 'datalake' realizado com sucesso.
+2025-08-07 16:48:35,748 - minio_datalake_app - INFO - Arquivo 'data/analise_vendas.csv' enviado como 'analise_vendas.csv' para o bucket 'datalake' com sucesso.
+2025-08-07 16:48:35,749 - minio_datalake_app - INFO - Script de upload do arquivo finalizado.

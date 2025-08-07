@@ -1,0 +1,12 @@
+2025-07-25 09:47:26,182 - minio_datalake_app - INFO - Iniciando script de upload de diretório.
+2025-07-25 09:47:26,183 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-25 09:47:26,197 - minio_datalake_app - INFO - Iniciando upload recursivo do diretório 'data/Comfaulda' para 'datalake/Comfaulda/'.
+2025-07-25 09:47:48,272 - minio_datalake_app - INFO - Upload do diretório 'data/Comfaulda' para 'datalake/Comfaulda/' concluído com sucesso. (91 arquivos upados).
+2025-07-25 09:47:48,273 - minio_datalake_app - INFO - Diretório 'data/Comfaulda' enviado para o bucket 'datalake' com sucesso.
+2025-07-25 09:47:48,273 - minio_datalake_app - INFO - Script de upload de diretório finalizado.
+2025-08-07 16:42:10,283 - minio_datalake_app - INFO - Iniciando script de upload de diretório.
+2025-08-07 16:42:10,284 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-08-07 16:42:10,301 - minio_datalake_app - INFO - Iniciando upload recursivo do diretório 'data/Comfaulda' para 'datalake/Comfaulda/'.
+2025-08-07 16:42:29,432 - minio_datalake_app - INFO - Upload do diretório 'data/Comfaulda' para 'datalake/Comfaulda/' concluído com sucesso. (91 arquivos upados).
+2025-08-07 16:42:29,433 - minio_datalake_app - INFO - Diretório 'data/Comfaulda' enviado para o bucket 'datalake' com sucesso.
+2025-08-07 16:42:29,433 - minio_datalake_app - INFO - Script de upload de diretório finalizado.

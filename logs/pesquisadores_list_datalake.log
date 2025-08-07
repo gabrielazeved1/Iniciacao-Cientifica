@@ -1,0 +1,34 @@
+2025-07-25 09:46:54,991 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-25 09:46:54,992 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-25 09:46:54,992 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-07-25 09:46:54,992 - minio_datalake_app - INFO - Consultando buckets existentes no MinIO.
+2025-07-25 09:46:55,003 - minio_datalake_app - INFO - Buckets encontrados:
+2025-07-25 09:46:55,003 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-07-25 09:46:55,003 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-07-25 09:46:55,003 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-07-25 09:48:09,750 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-25 09:48:09,751 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-25 09:48:09,751 - minio_datalake_app - INFO - Listando conteúdo para bucket 'datalake', prefixo 'Comfaulda/', recursivo=False.
+2025-07-25 09:48:09,751 - minio_datalake_app - INFO - Listando conteúdo do bucket 'datalake' com prefixo 'Comfaulda/', recursivo=False.
+2025-07-25 09:48:09,772 - minio_datalake_app - INFO - Conteúdo encontrado para prefixo 'Comfaulda/': Pastas=3, Arquivos=1.
+2025-07-25 09:48:09,772 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-07-25 09:48:16,944 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-25 09:48:16,945 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-25 09:48:16,945 - minio_datalake_app - INFO - Listando conteúdo para bucket 'datalake', prefixo 'Comfaulda/Combined Faults/Unbalance_Horizontal_misalignment/Unbalance_30_g+Hor. Misalignment_0.5_mm/', recursivo=False.
+2025-07-25 09:48:16,946 - minio_datalake_app - INFO - Listando conteúdo do bucket 'datalake' com prefixo 'Comfaulda/Combined Faults/Unbalance_Horizontal_misalignment/Unbalance_30_g+Hor. Misalignment_0.5_mm/', recursivo=False.
+2025-07-25 09:48:16,960 - minio_datalake_app - INFO - Conteúdo encontrado para prefixo 'Comfaulda/Combined Faults/Unbalance_Horizontal_misalignment/Unbalance_30_g+Hor. Misalignment_0.5_mm/': Pastas=0, Arquivos=8.
+2025-07-25 09:48:16,961 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-07-25 09:49:12,920 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-07-25 09:49:12,920 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-07-25 09:49:12,921 - minio_datalake_app - INFO - Listando conteúdo para bucket 'datalake', prefixo 'testes/', recursivo=False.
+2025-07-25 09:49:12,921 - minio_datalake_app - INFO - Listando conteúdo do bucket 'datalake' com prefixo 'testes/', recursivo=False.
+2025-07-25 09:49:12,940 - minio_datalake_app - INFO - Conteúdo encontrado para prefixo 'testes/': Pastas=0, Arquivos=1.
+2025-07-25 09:49:12,940 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-08-07 16:42:00,267 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-08-07 16:42:00,268 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-08-07 16:42:00,269 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-08-07 16:42:00,269 - minio_datalake_app - INFO - Consultando buckets existentes no MinIO.
+2025-08-07 16:42:00,283 - minio_datalake_app - INFO - Buckets encontrados:
+2025-08-07 16:42:00,283 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-08-07 16:42:00,283 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-08-07 16:42:00,283 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
