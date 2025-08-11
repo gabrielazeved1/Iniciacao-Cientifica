@@ -1,18 +1,19 @@
+# minio_loader.py
 import os
 import sys
 import pandas as pd
 import logging
 from dotenv import load_dotenv
 import matplotlib.pyplot as plt
+import IPython 
 
 # --- config logging ---
-# esta parte e pra configurar o sistema de log do script
 logging.basicConfig(
-    level=logging.INFO,  # o nivel de log e INFO entao vai registrar informacoes e erros
+    level=logging.INFO,  
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
-        logging.FileHandler("minio_loader.log"),  # aqui eu digo pra salvar o log em um arquivo
-        logging.StreamHandler(sys.stdout)         # e aqui eu digo pra mostrar o log tambem no terminal
+        logging.FileHandler("minio_loader.log"),
+        logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger()
@@ -48,23 +49,17 @@ def load_dataset(bucket, path, key=None, secret=None, endpoint=None):
 
 
 def mostrar_info_basica(df):
-    # mostra as primeiras 5 linhas do DataFrame
     print("\n=== Primeiras 5 linhas ===")
     print(df.head())
 
-    # mostra estatísticas descritivas (contagem, média, desvio, etc)
     print("\n=== Estatísticas descritivas ===")
     print(df.describe(include='all'))
 
 
 def verificar_qualidade_dados(df):
     print("\n=== Verificação de Qualidade dos Dados ===")
-
-    # mostra quantos valores ausentes tem em cada coluna
     print("\n--- Valores Ausentes por Coluna ---")
     print(df.isnull().sum())
-
-    # mostra quantos valores únicos existem em cada coluna
     print("\n--- Contagem de Valores Únicos por Coluna ---")
     print(df.nunique())
 
@@ -72,10 +67,9 @@ def verificar_qualidade_dados(df):
 def calcular_correlacao(df):
     print("\n--- Matriz de Correlação ---")
     try:
-        # pega só colunas numéricas
         df_numeric = df.select_dtypes(include=['number'])
         if not df_numeric.empty:
-            print(df_numeric.corr())  # mostra a matriz de correlação
+            print(df_numeric.corr())
         else:
             print("Nenhuma coluna numérica encontrada para calcular correlação.")
     except Exception as e:
@@ -88,46 +82,22 @@ def gerar_histogramas(df):
     try:
         df_numeric = df.select_dtypes(include=['number'])
         if not df_numeric.empty:
-            # --- MUDANÇA AQUI: AJUSTA O TAMANHO DA FIGURA E O LAYOUT ---
-            # figsize=(15, 12) cria uma figura maior, dando mais espaço para cada histograma.
             df_numeric.hist(figsize=(15, 12)) 
-            plt.suptitle('Distribuição das Colunas Numéricas', x=0.5, y=0.97, fontsize=16) # Posiciona o titulo
-            plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # Ajusta o layout para evitar sobreposicao
-            
-            # Salva a imagem em um arquivo
+            plt.suptitle('Distribuição das Colunas Numéricas', x=0.5, y=0.97, fontsize=16)
+            plt.tight_layout(rect=[0, 0.03, 1, 0.95])
             nome_do_arquivo = "histograma_datalake.png"
             plt.savefig(nome_do_arquivo)
-            
-            plt.close() # Fecha a figura para liberar a memoria
-            
+            plt.close()
             print(f"Histogramas gerados e salvos no arquivo '{nome_do_arquivo}'.")
             logger.info(f"Histogramas salvos em '{nome_do_arquivo}'.")
-
         else:
             print("Nenhuma coluna numérica encontrada para gerar histogramas.")
-
     except Exception as e:
         logger.error(f"Erro ao gerar histogramas: {e}")
         print("Erro ao gerar histogramas.")
 
-def aplicar_filtro_interativo(df):
-    # pergunta pro usuário se ele quer filtrar alguma coluna
-    col = input("\nDigite o nome da coluna para filtrar (ou ENTER para pular): ").strip()
-
-    # se a coluna existir, pede o valor e aplica o filtro
-    if col and col in df.columns:
-        val = input(f"Digite o valor para filtrar na coluna '{col}': ").strip()
-        df_filtrado = df[df[col].astype(str) == val]
-
-        # mostra o resultado do filtro
-        print(f"\n=== Linhas filtradas onde {col} == '{val}' ===")
-        print(df_filtrado)
-    else:
-        print("Nenhum filtro aplicado.")
-
 
 def main():
-    # carrega variáveis do .env se existirem
     load_dotenv()
 
     if len(sys.argv) < 3:
@@ -136,6 +106,15 @@ def main():
 
     bucket = sys.argv[1]
     path = sys.argv[2]
+    
+    access_key = os.environ.get("MINIO_ACCESS_KEY")
+    secret_key = os.environ.get("MINIO_SECRET_KEY")
+    endpoint = os.environ.get("MINIO_ENDPOINT")
+
+    if not access_key or not secret_key or not endpoint:
+        print("[✖] Erro: Credenciais MinIO (key, secret, endpoint) não estão configuradas.")
+        print("Use o script de login: 'source researchers_scripts/login_datalake.sh usuario senha [endpoint]'")
+        sys.exit(1)
 
     try:
         # carrega o dataset
@@ -153,13 +132,17 @@ def main():
         # gera graficos de distribuicao (histogramas)
         gerar_histogramas(df)
 
-        # permite aplicar um filtro interativo no terminal
-        aplicar_filtro_interativo(df)
+        print("\n=== Sessão de Análise Interativa (IPython) ===")
+        print("A variável 'df' com o DataFrame está disponível.")
+        
+        print("ver se precisa desses calculos estatisticos ai encima")
+        # aqui entra o shell interativo
+        IPython.embed()
+        
 
     except Exception as e:
         print(f"Erro: {e}")
 
 
-# aqui é onde o script começa de verdade quando você roda: python minio_loader.py ...
 if __name__ == "__main__":
     main()
