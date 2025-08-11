@@ -32,3 +32,33 @@
 2025-08-07 16:42:00,283 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
 2025-08-07 16:42:00,283 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
 2025-08-07 16:42:00,283 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-08-11 11:16:29,664 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-08-11 11:16:29,666 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-08-11 11:16:29,666 - minio_datalake_app - INFO - Listando conteúdo para bucket 'datalake', prefixo '', recursivo=False.
+2025-08-11 11:16:29,666 - minio_datalake_app - INFO - Listando conteúdo do bucket 'datalake' com prefixo '', recursivo=False.
+2025-08-11 11:16:29,690 - minio_datalake_app - INFO - Conteúdo encontrado para prefixo '': Pastas=1, Arquivos=1.
+2025-08-11 11:16:29,690 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-08-11 11:22:07,139 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-08-11 11:22:07,140 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-08-11 11:22:07,140 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-08-11 11:22:07,140 - minio_datalake_app - INFO - Consultando buckets existentes no MinIO.
+2025-08-11 11:22:07,162 - minio_datalake_app - INFO - Buckets encontrados:
+2025-08-11 11:22:07,162 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-08-11 11:22:07,162 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-08-11 11:22:07,162 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-08-11 11:31:00,109 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-08-11 11:31:00,110 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-08-11 11:31:00,110 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-08-11 11:31:00,110 - minio_datalake_app - INFO - Consultando buckets existentes no MinIO.
+2025-08-11 11:31:00,141 - minio_datalake_app - INFO - Buckets encontrados:
+2025-08-11 11:31:00,141 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-08-11 11:31:00,141 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-08-11 11:31:00,141 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.
+2025-08-11 11:33:22,487 - minio_datalake_app - INFO - Iniciando script de exploração do Data Lake.
+2025-08-11 11:33:22,488 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000
+2025-08-11 11:33:22,488 - minio_datalake_app - INFO - Listando todos os buckets.
+2025-08-11 11:33:22,488 - minio_datalake_app - INFO - Consultando buckets existentes no MinIO.
+2025-08-11 11:33:22,507 - minio_datalake_app - INFO - Buckets encontrados:
+2025-08-11 11:33:22,507 - minio_datalake_app - INFO -  - backup (Criado em: 2025-06-28 19:47:40.256000+00:00)
+2025-08-11 11:33:22,507 - minio_datalake_app - INFO -  - datalake (Criado em: 2025-06-28 19:47:40.217000+00:00)
+2025-08-11 11:33:22,507 - minio_datalake_app - INFO - Script de exploração do Data Lake finalizado.

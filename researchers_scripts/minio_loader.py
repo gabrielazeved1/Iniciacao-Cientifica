@@ -88,17 +88,17 @@ def gerar_histogramas(df):
     try:
         df_numeric = df.select_dtypes(include=['number'])
         if not df_numeric.empty:
+            # --- MUDANÇA AQUI: AJUSTA O TAMANHO DA FIGURA E O LAYOUT ---
             # figsize=(15, 12) cria uma figura maior, dando mais espaço para cada histograma.
             df_numeric.hist(figsize=(15, 12)) 
             plt.suptitle('Distribuição das Colunas Numéricas', x=0.5, y=0.97, fontsize=16) # Posiciona o titulo
             plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # Ajusta o layout para evitar sobreposicao
             
-            # salvar foto/teste. acho que vou so mostrar a foto mesmo!!!
-            print("preciso mudar isso aqui depois")
+            # Salva a imagem em um arquivo
             nome_do_arquivo = "histograma_datalake.png"
             plt.savefig(nome_do_arquivo)
             
-            plt.close() 
+            plt.close() # Fecha a figura para liberar a memoria
             
             print(f"Histogramas gerados e salvos no arquivo '{nome_do_arquivo}'.")
             logger.info(f"Histogramas salvos em '{nome_do_arquivo}'.")
@@ -109,6 +109,7 @@ def gerar_histogramas(df):
     except Exception as e:
         logger.error(f"Erro ao gerar histogramas: {e}")
         print("Erro ao gerar histogramas.")
+
 def aplicar_filtro_interativo(df):
     # pergunta pro usuário se ele quer filtrar alguma coluna
     col = input("\nDigite o nome da coluna para filtrar (ou ENTER para pular): ").strip()

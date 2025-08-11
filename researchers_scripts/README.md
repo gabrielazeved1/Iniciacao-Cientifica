@@ -4,7 +4,7 @@ Bem-vindo ao Data Lake local! Este guia irá ajudá-lo a configurar seu ambiente
 
 ---
 
-## 📚 Sumário do Conteúdo
+## Sumário do Conteúdo
 
 1. [Introdução](#1-introdução)  
 2. [Pré-requisitos](#2-pré-requisitos)  
@@ -74,7 +74,7 @@ O Data Lake MinIO está hospedado no IP `127.0.0.1:9001`. Você pode acessá-lo 
 
 2. Insira suas credenciais fornecidas.
 
-✅ **Ideal para:**
+**Ideal para:**
 - Uploads/downloads pontuais  
 - Navegação visual  
 - Usuários não técnicos
@@ -91,7 +91,7 @@ Para autenticar os scripts, é necessário configurar variáveis de ambiente. O 
 source researchers_scripts/login_datalake.sh SEU_USUARIO SUA_SENHA
 ```
 
-🔑 Isso define:
+Isso define:
 
 ```bash
 export MINIO_ACCESS_KEY="SEU_USUARIO"
@@ -100,7 +100,7 @@ export MINIO_SECRET_KEY="SUA_SENHA"
 
 > Essas variáveis duram enquanto o terminal estiver aberto.
 
-✅ **Ideal para:**
+**Ideal para:**
 - Automação de uploads/downloads  
 - Integração com scripts de análise (ex: Pandas)  
 - Usuários com conhecimento básico de terminal
@@ -111,7 +111,7 @@ export MINIO_SECRET_KEY="SUA_SENHA"
 
 Execute sempre da raiz do projeto. Todos os scripts estão em `researchers_scripts/`.
 
-### **📁 Listar buckets e conteúdo: `list_datalake.py`**
+### ** Listar buckets e conteúdo: `list_datalake.py`**
 
 ```bash
 # Lista todos os buckets
@@ -128,9 +128,26 @@ python researchers_scripts/list_datalake.py datalake Comfaulda/ --recursive
 ```
 
 ---
+### **Análise de Dados na RAM (Estilo Kaggle): `minio_loader.py`**
 
-### **⬆️ Upload de Arquivos**
+Este é o script mais completo para análise de dados. Ele lê arquivos CSV do Data Lake diretamente para a memória RAM, sem ocupar espaço no disco. Além de mostrar as primeiras linhas e estatísticas, ele também realiza análises de qualidade e gera gráficos.
+# Ler de uma subpasta específica
+```bash
+python researchers_scripts/minio_loader.py datalake pasta1/pasta2/arquivo.csv
+```
 
+# Ler um arquivo CSV e iniciar a análise interativa
+```bash
+python researchers_scripts/minio_loader.py datalake analise_vendas.csv
+```
+
+
+# Exemplo com um arquivo real da sua pasta 'Comfaulda'
+```bash
+python researchers_scripts/minio_loader.py datalake "Comfaulda/Combined Faults/Unbalance_Horizontal_misalignment/Unbalance_30_g+Hor. Misalignment_0.5_mm/12.97.csv"
+```
+
+### **Upload de Arquivos**
 ```bash
 # Enviar um único arquivo
 python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv
@@ -143,7 +160,7 @@ python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
 
 ---
 
-### **⬇️ Download de Arquivos**
+### **Download de Arquivos**
 
 ```bash
 # Baixar da raiz do bucket
@@ -155,7 +172,7 @@ python researchers_scripts/download_file.py datalake pasta1/pasta2/nome_arquivo.
 
 ---
 
-### **📊 Ler Dataset com Pandas**
+### **Ler Dataset com Pandas**
 
 ```bash
 # Ler diretamente do bucket para um DataFrame
@@ -172,8 +189,8 @@ python researchers_scripts/read_dataset.py datalake pasta1/pasta2/arquivo.csv
 Caso encontre problemas, entre em contato com:
 
 **Administrador do Data Lake**  
-📧 Gabriel Azevedo  
+Gabriel Azevedo  
 
 ---
 
-📝 *Todas as operações feitas por scripts são registradas automaticamente na pasta `logs/` do projeto para facilitar o diagnóstico de erros.*
+*Todas as operações feitas por scripts são registradas automaticamente na pasta `logs/` do projeto para facilitar o diagnóstico de erros.*
