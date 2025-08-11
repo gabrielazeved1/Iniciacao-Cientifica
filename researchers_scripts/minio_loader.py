@@ -48,53 +48,7 @@ def load_dataset(bucket, path, key=None, secret=None, endpoint=None):
         raise
 
 
-def mostrar_info_basica(df):
-    print("\n=== Primeiras 5 linhas ===")
-    print(df.head())
 
-    print("\n=== Estatísticas descritivas ===")
-    print(df.describe(include='all'))
-
-
-def verificar_qualidade_dados(df):
-    print("\n=== Verificação de Qualidade dos Dados ===")
-    print("\n--- Valores Ausentes por Coluna ---")
-    print(df.isnull().sum())
-    print("\n--- Contagem de Valores Únicos por Coluna ---")
-    print(df.nunique())
-
-
-def calcular_correlacao(df):
-    print("\n--- Matriz de Correlação ---")
-    try:
-        df_numeric = df.select_dtypes(include=['number'])
-        if not df_numeric.empty:
-            print(df_numeric.corr())
-        else:
-            print("Nenhuma coluna numérica encontrada para calcular correlação.")
-    except Exception as e:
-        logger.error(f"Erro ao calcular correlação: {e}")
-        print("Erro ao calcular correlação.")
-
-
-def gerar_histogramas(df):
-    print("\n--- Histograma das Colunas Numéricas ---")
-    try:
-        df_numeric = df.select_dtypes(include=['number'])
-        if not df_numeric.empty:
-            df_numeric.hist(figsize=(15, 12)) 
-            plt.suptitle('Distribuição das Colunas Numéricas', x=0.5, y=0.97, fontsize=16)
-            plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-            nome_do_arquivo = "histograma_datalake.png"
-            plt.savefig(nome_do_arquivo)
-            plt.close()
-            print(f"Histogramas gerados e salvos no arquivo '{nome_do_arquivo}'.")
-            logger.info(f"Histogramas salvos em '{nome_do_arquivo}'.")
-        else:
-            print("Nenhuma coluna numérica encontrada para gerar histogramas.")
-    except Exception as e:
-        logger.error(f"Erro ao gerar histogramas: {e}")
-        print("Erro ao gerar histogramas.")
 
 
 def main():
@@ -120,22 +74,7 @@ def main():
         # carrega o dataset
         df = load_dataset(bucket, path)
 
-        # analises basicas
-        mostrar_info_basica(df)
-
-        # verifica dados ausentes, valores unicos
-        verificar_qualidade_dados(df)
-
-        # calcula a correlacao entre colunas numericas
-        calcular_correlacao(df)
-
-        # gera graficos de distribuicao (histogramas)
-        gerar_histogramas(df)
-
-        print("\n=== Sessão de Análise Interativa (IPython) ===")
-        print("A variável 'df' com o DataFrame está disponível.")
-        
-        print("ver se precisa desses calculos estatisticos ai encima")
+        print("verificando se deu certo...")
         # aqui entra o shell interativo
         IPython.embed()
         
