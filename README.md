@@ -1,56 +1,28 @@
-# Projeto: Data Lake Local para Pesquisa com MinIO
+# Projeto: Data Lake Local para Pesquisa - Iniciação Científica na UFU/LMest
 
-Este projeto estabelece um ambiente de Data Lake local utilizando o MinIO — um armazenamento de objetos compatível com a API S3. Ele fornece aos pesquisadores e ao administrador um acesso estruturado e seguro aos dados, com suporte a operações como upload, download, leitura direta e backup automatizado.
+Este projeto foi desenvolvido como parte de uma Iniciação Científica no laboratório LMest da UFU, com o objetivo de criar uma solução de Data Lake local e acessível para a pesquisa. A plataforma utiliza o MinIO para o armazenamento de dados, complementada por scripts Python para automatizar e facilitar o acesso aos dados.
 
 ---
 
 ## Sumário do Conteúdo
 
-1. [Recursos Principais](#1-recursos-principais)  
-2. [Pré-requisitos](#2-pré-requisitos)  
-3. [Estrutura do Projeto](#3-estrutura-do-projeto)  
-4. [Configuração Inicial do Ambiente](#4-configuração-inicial-do-ambiente)  
-5. [Uso para Administradores](#5-uso-para-administradores)  
-6. [Uso para Pesquisadores](#6-uso-para-pesquisadores)  
-7. [Logs do Sistema](#7-logs-do-sistema)  
-8. [Considerações Finais e Melhorias Futuras](#8-considerações-finais-e-melhorias-futuras)  
-9. [Solução de Problemas Comuns](#9-solução-de-problemas-comuns)
+1. [Problema e Solução](#1-problema-e-solução)
+2. [Arquitetura do Projeto](#2-arquitetura-do-projeto)
+3. [Guia de Instalação e Setup (Para Administradores)](#3-guia-de-instalação-e-setup-para-administradores)
+4. [Apresentação dos Módulos](#4-apresentação-dos-módulos)
+5. [Desafios e Soluções](#5-desafios-e-soluções)
+6. [Próximos Passos e Futuro do Projeto](#6-próximos-passos-e-futuro-do-projeto)
+7. [Anexo: Guia de Uso para Pesquisadores](#7-anexo-guia-de-uso-para-pesquisadores)
 
 ---
 
-## 1. Recursos Principais
+## **1. Problema e Solução**
 
-- MinIO via Docker Compose  
-- Buckets essenciais pré-configurados: `datalake` e `backup`  
-- Scripts Python para pesquisadores: upload, download, leitura e listagem  
-- Autenticação simplificada por variáveis de ambiente  
-- Sistema completo de logging  
-- Backup automático com restauração fácil  
+* **O Problema:** A pesquisa no laboratório LMest gera e consome grandes volumes de dados que, atualmente, podem estar espalhados em diferentes computadores, dificultando o acesso, a organização e o backup centralizado.
+* **A Solução:** Um Data Lake local, utilizando a plataforma de armazenamento de objetos **MinIO**. Este sistema centraliza os dados e oferece uma interface padronizada (API S3) e ferramentas Python para acesso programático e análise interativa.
+## **2. Arquitetura do Projeto**
 
----
-
-## 2. Pré-requisitos
-
-### Para todos os usuários
-
-- Python 3.x  
-- pip (gerenciador de pacotes do Python)  
-
-### Adicional para administradores
-
-- Docker e Docker Compose  
-- MinIO Client (mc)
-
-Instalação no macOS (via Homebrew):
-
-```bash
-brew install minio/stable/mc
-```
-
----
-
-## 3. Estrutura do Projeto
-
+A estrutura do projeto é modular e organizada para separar as responsabilidades:
 ```
 ├── data/                       # Dados locais (entrada/saída)
 │   └── Comfaulda/, ensaios/, etc.
@@ -60,6 +32,7 @@ brew install minio/stable/mc
 │   ├── upload_file.py
 │   ├── upload_directory.py
 │   ├── download_file.py
+|   ├── minio_loader.py
 │   ├── read_file.py
 │   ├── read_dataset.py
 │   └── list_datalake.py
@@ -74,176 +47,49 @@ brew install minio/stable/mc
 ```
 
 ---
+## **3. Guia de Instalação e Setup (Para Administradores)**
 
-## 4. Configuração Inicial do Ambiente
+Este guia é para implantar o Data Lake em um servidor.
 
-### 4.1 Iniciar o MinIO
+1.  **Inicie o Servidor MinIO:**
+    * Garanta que o Docker e o Docker Compose estejam instalados.
+    * No diretório raiz, execute: `docker-compose up -d`
 
-```bash
-docker-compose up -d
-```
+2.  **Instale as Dependências Python:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Acesse a interface Web: [http://localhost:9001](http://localhost:9001)  
-Credenciais padrão:
-- Usuário: `minio`
-- Senha: `miniol23`
+3.  **Configure o MinIO Client (mc) no servidor:**
+    ```bash
+    mc alias set localminio http://localhost:9000 minio miniol23
+    ```
 
----
+4.  **Inicialize o Data Lake:**
+    * O script `main.py` verificará a conexão, criará os buckets essenciais (`datalake`, `backup`) e configurará o ambiente.
+    ```bash
+    python src/main.py
+    ```
 
-### 4.2 Instalar Dependências Python
+## **4. Apresentação dos Módulos**
 
-```bash
-pip install -r requirements.txt
-```
+* **`src/minio_client.py`:** É o wrapper Python que permite que todos os scripts se conectem ao MinIO e executem operações como `upload`, `download` e `listagem`. 
+* **`src/backup_datalake.py`:** Implementa um sistema de backup interno robusto que usa `mc mirror` para criar cópias de segurança dos dados, com uma política de retenção automatizada.
 
----
+## **5. Desafios e Soluções (Destaques para a Apresentação)**
 
-### 4.3 Configurar MinIO Client (mc)
+* **Desafio do `Endpoint`:** A forma de acesso ao servidor MinIO muda dependendo do ambiente (`localhost` no seu computador, `minio-server` dentro do Docker, ou o IP real do servidor na rede).
+* **Nossa Solução:** Criamos o script `login_datalake.sh` para gerenciar essa complexidade. Ele permite ao usuário definir o `endpoint` de forma flexível, garantindo que o `MinioClient` se conecte ao endereço correto sem alterar o código.
 
-```bash
-mc alias set localminio http://localhost:9000 minio miniol23
-```
+* **Acesso Interativo aos Dados (`Kaggle-like`):**
+    * **O Conceito:** Acessar dados diretamente na memória RAM, sem a necessidade de downloads permanentes para o disco local.
+    * **Nossa Solução:** O script `minio_loader.py` faz exatamente isso. Ele carrega arquivos CSV do MinIO para um `DataFrame` do Pandas e, em seguida, inicia um ambiente interativo (IPython) onde os pesquisadores podem usar comandos do Pandas para análise em tempo real.
 
----
+## **6. Próximos Passos e Futuro do Projeto**
 
-### 4.4 Inicializar o Data Lake
+* **Levantamento de Requisitos no LMest:** Aprofundar o entendimento das demandas dos pesquisadores para customizar a solução (quais dados, quais ferramentas).
+* **Implementação Final no Servidor:** Fazer a transição do protótipo para a instalação definitiva no servidor do laboratório.
 
-```bash
-python src/main.py
-```
+## **7. Anexo: Guia de Uso para Pesquisadores**
 
-Isso criará os buckets principais e configurações iniciais.
-
----
-
-## 5. Uso para Administradores
-
-### 5.1 Executar Backup Manualmente
-
-```bash
-python src/backup_datalake.py
-```
-
----
-
-### 5.2 Restaurar Backup
-
-```bash
-# Restaurar bucket completo
-mc mirror --overwrite /caminho/do/backup/YYYYMMDD_HHMMSS/datalake localminio/datalake
-
-# Restaurar arquivo específico
-mc cp /caminho/do/backup/YYYYMMDD_HHMMSS/datalake/pasta/arquivo.csv localminio/datalake/pasta/arquivo.csv
-```
-
----
-
-## 6. Uso para Pesquisadores
-
-### 6.1 Autenticação
-
-Autenticar manualmente:
-
-```bash
-export MINIO_ACCESS_KEY="minio"
-export MINIO_SECRET_KEY="miniol23"
-```
-
-Ou utilize o script de login:
-
-```bash
-source researchers_scripts/login_datalake.sh SEU_USUARIO SUA_SENHA
-```
-
----
-
-### 6.2 Scripts Disponíveis
-
-Execute sempre da raiz do projeto.
-
-#### Listar Buckets e Conteúdo: `list_datalake.py`
-
-```bash
-# Listar buckets
-python researchers_scripts/list_datalake.py
-
-# Listar conteúdo de um bucket
-python researchers_scripts/list_datalake.py datalake
-
-# Listar conteúdo de uma pasta
-python researchers_scripts/list_datalake.py datalake Comfaulda/
-
-# Listar recursivamente
-python researchers_scripts/list_datalake.py datalake Comfaulda/ --recursive
-```
-
----
-
-#### Uploads
-
-```bash
-# Upload de arquivo
-python researchers_scripts/upload_file.py datalake data/arquivo.csv
-
-# Upload com destino específico
-python researchers_scripts/upload_file.py datalake data/arquivo.csv Comfaulda
-
-# Upload de diretório
-python researchers_scripts/upload_directory.py datalake data/Comfaulda Comfaulda
-```
-
----
-
-#### Downloads
-
-```bash
-# Baixar arquivo da raiz
-python researchers_scripts/download_file.py datalake meu_arquivo.csv
-
-# Baixar arquivo de subpasta
-python researchers_scripts/download_file.py datalake relatorios/2025/analise_final.csv
-```
-
----
-
-#### Leitura com Pandas
-
-```bash
-# Ler CSV da raiz
-python researchers_scripts/read_file.py datalake arquivo.csv
-
-# Ler CSV de subpasta
-python researchers_scripts/read_dataset.py datalake relatorios/2025/analise.csv
-```
-
----
-
-## 7. Logs do Sistema
-
-| Caminho                                     | Descrição                                        |
-|--------------------------------------------|--------------------------------------------------|
-| `logs/datalake_admin.log`                  | Inicialização do Data Lake (`src/main.py`)       |
-| `logs/datalake_backup.log`                 | Backup automatizado (`backup_datalake.py`)       |
-| `logs/pesquisadores_upload.log`            | Uploads de arquivos                              |
-| `logs/pesquisadores_upload_diretorio.log`  | Uploads de diretórios                            |
-| `logs/pesquisadores_download.log`          | Downloads realizados                             |
-| `logs/pesquisadores_list_datalake.log`     | Listagens de buckets e conteúdos (`list_datalake.py`) |
-| `logs/pesquisadores_read_dataset.log`      | Leitura de arquivos com Pandas                   |
-
----
-
-## 8. Solução de Problemas Comuns
-
-**Erro de autenticação no MinIO**  
-Verifique se as variáveis de ambiente estão definidas corretamente.
-
-**Bucket não encontrado**  
-Execute `python src/main.py` para inicializar os buckets.
-
-**Porta em uso ao iniciar o Docker**  
-Altere as portas no `docker-compose.yml` ou pare o processo que está ocupando a porta.
-
-
-
-fazer uma apii
-em que eles vao buscar os dados em uma url
+Para instruções detalhadas de como utilizar os scripts de `upload`, `download`, `listagem`, `leitura` e a ferramenta de análise `minio_loader.py`, consulte o `README.md` localizado na pasta `researchers_scripts/`.
