@@ -128,26 +128,43 @@ python researchers_scripts/list_datalake.py datalake Comfaulda/ --recursive
 ```
 
 ---
-### **Análise de Dados na RAM (Estilo Kaggle): `minio_loader.py`**
+### **Análise de Dados Interativa com Pandas (Estilo Kaggle): `minio_loader.py`**
 
-Este é o script mais completo para análise de dados. Ele lê arquivos CSV do Data Lake diretamente para a memória RAM, sem ocupar espaço no disco. Além de mostrar as primeiras linhas e estatísticas, ele também realiza análises de qualidade e gera gráficos.
+Este é o script mais completo para análise de dados. Ele não apenas lê arquivos CSV do Data Lake diretamente para a memória RAM, sem ocupar espaço no disco, mas também te coloca em um **ambiente interativo** para trabalhar com os dados.
+
+O script executa uma série de análises iniciais (estatísticas, qualidade dos dados e gráficos) e, em seguida, inicia um terminal Python ao vivo (IPython). Nele, você pode usar **qualquer comando do Pandas** na variável `df` para explorar os dados.
+
+```bash
 # Ler de uma subpasta específica
-```bash
 python researchers_scripts/minio_loader.py datalake pasta1/pasta2/arquivo.csv
-```
 
-# Ler um arquivo CSV e iniciar a análise interativa
-```bash
-python researchers_scripts/minio_loader.py datalake analise_vendas.csv
-```
+# Para iniciar a análise interativa com o arquivo de vendas
+python researchers_scripts/minio_loader.py datalake data/analise_vendas.csv
 
-
-# Exemplo com um arquivo real da sua pasta 'Comfaulda'
-```bash
+# Para iniciar a análise interativa com um arquivo da sua pasta 'Comfaulda'
 python researchers_scripts/minio_loader.py datalake "Comfaulda/Combined Faults/Unbalance_Horizontal_misalignment/Unbalance_30_g+Hor. Misalignment_0.5_mm/12.97.csv"
+```
+O script irá pausar em um prompt interativo do IPython (`In [1]:`). A partir daí, a variável `df` com o seu DataFrame estará disponível, e você pode rodar os comandos abaixo:
+
+#### **Exemplos de Interação com o DataFrame:**
+
+```python
+# Python
+# Ver as primeiras linhas do DataFrame
+In [1]: df.head()
+
+# Calcular a média da coluna 'Vendas'
+In [2]: df['Vendas'].mean()
+
+# Filtrar os dados por uma condição
+In [3]: df_filtrado = df.loc[df['Regiao'] == 'Sudeste']
+
+# Obter um resumo estatístico das colunas
+In [4]: df.describe()
 ```
 
 ### **Upload de Arquivos**
+
 ```bash
 # Enviar um único arquivo
 python researchers_scripts/upload_file.py datalake data/meu_arquivo.csv
