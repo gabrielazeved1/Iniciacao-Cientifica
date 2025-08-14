@@ -116,3 +116,32 @@ def list_buckets(current_user_access_key: str = Depends(get_current_user_access_
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Erro ao listar buckets: {err}"
         )
+@app.get("/buckets/{bucket_name}")
+def list_buckets_content(
+    bucket_name: str,
+    prefix: str = "", # <-- Parâmetro opcional para o prefixo
+    current_user_access_key: str = Depends(get_current_user_access_key)
+):
+    """
+    Lista todos os objetos (arquivos e subpastas) dentro de um bucket específico.
+    Se um prefixo for fornecido, lista apenas o conteúdo daquela "pasta".
+    """
+    try:
+        minio_client_instance = MinioClient(
+            access_key=current_user_access_key,
+            secret_key=fake_db.get(current_user_access_key),
+            endpoint=MINIO_ENDPOINT
+        )
+        
+        objects = minio_client_instance.client.list_objects(
+            bucket_name,
+            prefix=prefix, # <-- Passamos o prefixo para o Minio
+            recursive=False # <-- Mudamos para False para listar apenas a pasta atual
+        )
+        
+        return {"objects": [obj.object_name for obj in objects]}
+    except S3Error as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao listar o conteúdo do bucket: {err}"
+        )
