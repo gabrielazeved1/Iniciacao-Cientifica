@@ -16,7 +16,8 @@ dependencies = [
     "uvicorn (>=0.35.0,<0.36.0)",
     "python-dotenv (>=1.1.1,<2.0.0)",
     "python-multipart (>=0.0.20,<0.0.21)",
-    "pydantic (>=2.11.7,<3.0.0)"
+    "pydantic (>=2.11.7,<3.0.0)",
+    "python-jose[cryptography] (>=3.5.0,<4.0.0)"
 ]
 
 

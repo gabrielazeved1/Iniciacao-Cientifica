@@ -1,80 +1,118 @@
 # src/main.py
-import logging
-import sys
+
+# Bibliotecas padrão do Python
 import os
+from datetime import timedelta
+
+# Bibliotecas de terceiros
 from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
+from minio import Minio
+from minio.error import S3Error
 
-# Adiciona o diretório 'src' ao sys.path para permitir importações relativas
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Módulos do seu projeto
+from .minio_client import MinioClient
+from .models.auth import MinioCredentials
+from .utils.token import create_access_token, verify_token
 
+# Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
 
-from logger import setup_logging
-from minio_client import MinioClient
-from list_service import ListService # Importa o novo servico de listagem
+# Variáveis e configurações globais
+SECRET_KEY = os.getenv("SECRET_KEY")
+MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-logger = setup_logging(log_file_name="datalake_admin.log")
+# Simulação de um banco de dados de usuários
+fake_db = {
+    "minio": "miniol23",
+    "amanda": "amanda123",
+    "pedro": "pedro456"
+}
 
-def initialize_datalake_environment():
-    """
-    função para inicializar o ambiente do Data Lake:
-    - verificar conexão com MinIO.
-    - criar buckets essenciais se não existirem.
-    """
-    logger.info("Iniciando a verificação e configuração do ambiente do Data Lake.")
-    print("Iniciando a verificação e configuração do ambiente do Data Lake...")
+# Instancia a aplicação FastAPI
+app = FastAPI()
 
+# Rota para obter o token a partir de um usuário autenticado
+def get_current_user_access_key(token: str = Depends(oauth2_scheme)):
     try:
-        # Pega as credenciais e endpoint das variáveis de ambiente
-        access_key = os.environ.get("MINIO_ROOT_USER")
-        secret_key = os.environ.get("MINIO_ROOT_PASSWORD")
-        endpoint = os.environ.get("MINIO_ENDPOINT")
+        payload = verify_token(token, SECRET_KEY)
+        access_key: str = payload.get("sub")
+        if access_key is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token inválido.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return access_key
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido ou expirado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+@app.get("/")
+def read_root():
+    return {
+        "message": "Bem-vindo à API do Datalake MinIO!",
+        "instrucoes_login": (
+            "Para acessar, faça o login enviando um POST para a rota '/login' "
+            "com suas credenciais Minio no corpo da requisição."
+        )
+    }
+
+@app.post("/login", status_code=status.HTTP_200_OK)
+def login(credentials: MinioCredentials):
+    """
+    Recebe as credenciais do MinIO, verifica a validade e retorna um JWT.
+    """
+    # Verifica se o usuário e a senha existem no nosso banco de dados
+    if not (credentials.access_key in fake_db and fake_db[credentials.access_key] == credentials.secret_key):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciais inválidas. Verifique seu access_key e secret_key."
+        )
+    
+    # Se a verificação interna for bem-sucedida, tentamos a conexão com o MinIO
+    try:
+        minio_client_instance = MinioClient(
+            access_key=credentials.access_key,
+            secret_key=credentials.secret_key,
+            endpoint=MINIO_ENDPOINT
+        )
+        minio_client_instance.client.list_buckets()
         
-        # Agora o MinioClient é usado como uma ferramenta de conexão
-        minio_client_connection = MinioClient(access_key=access_key, secret_key=secret_key, endpoint=endpoint)
-
-        # O servico de listagem agora lida com as operacoes de listagem
-        list_service = ListService(access_key=access_key, secret_key=secret_key, endpoint=endpoint)
+        access_token_expires = timedelta(minutes=30)
+        access_token = create_access_token(
+            data={"sub": credentials.access_key},
+            secret_key=SECRET_KEY, 
+            expires_delta=access_token_expires
+        )
         
-        try:
-            logger.info("Testando conexão com o MinIO...")
-            print("Testando conexão com o MinIO...")
-            # A chamada para list_buckets() agora vem do servico de listagem
-            list_service.list_all_buckets()
-            logger.info("Conexão com MinIO estabelecida com sucesso.")
-            print("[✔] Conexão com MinIO estabelecida com sucesso.")
-        except Exception as e:
-            logger.critical(f"NÃO FOI POSSÍVEL CONECTAR AO MINIO. Verifique se o MinIO está rodando e acessível. Erro: {e}")
-            print(f"[✖] ERRO: NÃO FOI POSSÍVEL CONECTAR AO MINIO. Verifique se o MinIO está rodando e acessível. Detalhes no log.")
-            sys.exit(1) 
+        return {"access_token": access_token, "token_type": "bearer"}
+    except S3Error as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao conectar ao MinIO: {err}"
+        )
 
-        essential_buckets = ["datalake", "backup"]
-        print("\nVerificando buckets essenciais:")
-
-        for bucket in essential_buckets:
-            if not minio_client_connection.client.bucket_exists(bucket):
-                logger.info(f"Bucket '{bucket}' não existe. Criando...")
-                print(f"  - Bucket '{bucket}' não existe. Criando...")
-                try:
-                    minio_client_connection.client.make_bucket(bucket)
-                    logger.info(f"Bucket '{bucket}' criado com sucesso.")
-                    print(f"  [✔] Bucket '{bucket}' criado com sucesso.")
-                except Exception as e:
-                    logger.error(f"Falha ao criar o bucket '{bucket}': {e}")
-                    print(f"  [✖] Falha ao criar o bucket '{bucket}'. Detalhes no log.")
-            else:
-                logger.info(f"Bucket '{bucket}' já existe. Ok.")
-                print(f"  [~] Bucket '{bucket}' já existe. Ok.")
-
-        logger.info("Verificação e configuração do ambiente do Data Lake concluída.")
-        print("\n[✔] Verificação e configuração do ambiente do Data Lake concluída com sucesso!")
-
-    except Exception as e:
-        logger.critical(f"Ocorreu um erro crítico durante a inicialização do ambiente do Data Lake: {e}", exc_info=True)
-        print(f"[✖] ERRO CRÍTICO DURANTE A INICIALIZAÇÃO DO DATA LAKE. Detalhes no log.")
-    finally:
-        logger.info("Processo de inicialização do ambiente finalizado.")
-        print("Processo de inicialização do ambiente finalizado.")
-
-if __name__ == "__main__":
-    initialize_datalake_environment()
+@app.get("/buckets")
+def list_buckets(current_user_access_key: str = Depends(get_current_user_access_key)):
+    """
+    Lista todos os buckets acessíveis para o usuário autenticado.
+    """
+    try:
+        minio_client_instance = MinioClient(
+            access_key=current_user_access_key,
+            secret_key=fake_db.get(current_user_access_key),
+            endpoint=MINIO_ENDPOINT
+        )
+        buckets = minio_client_instance.client.list_buckets()
+        return {"buckets": [bucket.name for bucket in buckets]}
+    except S3Error as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao listar buckets: {err}"
+        )

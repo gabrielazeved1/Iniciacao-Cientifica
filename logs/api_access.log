@@ -186,3 +186,39 @@ minio.error.S3Error: S3 operation failed; code: InvalidAccessKeyId, message: The
 2025-08-11 17:46:53,655 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000 (secure=False)
 2025-08-11 17:46:53,680 - minio_datalake_app - INFO - API: Conexão com Minio bem-sucedida para o usuário 'amanda'.
 2025-08-11 17:47:01,341 - minio_datalake_app - INFO - MinioClient inicializado com endpoint: 127.0.0.1:9000 (secure=False)
+2025-08-14 10:24:48,831 - minio_datalake_app - ERROR - API: Falha na conexão com Minio para o usuário 'amanda': ListService.__init__() got an unexpected keyword argument 'access_key'
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/api/routes.py", line 52, in check_minio_connection
+    service = ListService(
+              ^^^^^^^^^^^^
+TypeError: ListService.__init__() got an unexpected keyword argument 'access_key'
+2025-08-14 10:25:08,378 - minio_datalake_app - ERROR - API: Falha na conexão com Minio para o usuário 'amanda': ListService.__init__() got an unexpected keyword argument 'access_key'
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/api/routes.py", line 52, in check_minio_connection
+    service = ListService(
+              ^^^^^^^^^^^^
+TypeError: ListService.__init__() got an unexpected keyword argument 'access_key'
+2025-08-14 10:25:40,124 - minio_datalake_app - ERROR - API: Falha na conexão com Minio para o usuário 'minioadmin': ListService.__init__() got an unexpected keyword argument 'access_key'
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/api/routes.py", line 52, in check_minio_connection
+    service = ListService(
+              ^^^^^^^^^^^^
+TypeError: ListService.__init__() got an unexpected keyword argument 'access_key'
+2025-08-14 10:29:04,702 - minio_datalake_app - ERROR - API: Falha na conexao com Minio para o usuario 'minioadmin': ListService.__init__() got an unexpected keyword argument 'access_key'
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/api/routes.py", line 51, in check_minio_connection
+    service = ListService(
+              ^^^^^^^^^^^^
+TypeError: ListService.__init__() got an unexpected keyword argument 'access_key'
+2025-08-14 10:29:49,883 - minio_datalake_app - ERROR - API: Falha na conexao com Minio para o usuario 'minioadmin': ListService.__init__() got an unexpected keyword argument 'access_key'
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/api/routes.py", line 51, in check_minio_connection
+    service = ListService(
+              ^^^^^^^^^^^^
+TypeError: ListService.__init__() got an unexpected keyword argument 'access_key'
+2025-08-14 10:32:56,215 - minio_datalake_app - ERROR - API: Falha na conexão com Minio para o usuário 'minioadmin': ListService.__init__() got an unexpected keyword argument 'access_key'
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/api/routes.py", line 52, in check_minio_connection
+    service = ListService(
+              ^^^^^^^^^^^^
+TypeError: ListService.__init__() got an unexpected keyword argument 'access_key'
