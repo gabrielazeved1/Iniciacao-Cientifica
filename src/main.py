@@ -1,147 +1,123 @@
-# src/main.py
-
-# Bibliotecas padrão do Python
-import os
-from datetime import timedelta
-
-# Bibliotecas de terceiros
-from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, status, Depends
-from fastapi.security import OAuth2PasswordBearer
-from minio import Minio
-from minio.error import S3Error
-
-# Módulos do seu projeto
-from .minio_client import MinioClient
+from fastapi import FastAPI, HTTPException, Depends, File, UploadFile
 from .models.auth import MinioCredentials
-from .utils.token import create_access_token, verify_token
+from .utils.session import get_current_user, create_session_token, session_store
+from .minio_client import MinioClient
+from .upload import Upload
+from .list import List
+from .download import Download
 
-# Carrega as variáveis de ambiente do arquivo .env
-load_dotenv()
+app = FastAPI()
 
-# Variáveis e configurações globais
-SECRET_KEY = os.getenv("SECRET_KEY")
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
-# Simulação de um banco de dados de usuários
+# Simulação de banco de usuários
 fake_db = {
     "minio": "miniol23",
     "amanda": "amanda123",
     "pedro": "pedro456"
 }
 
-# Instancia a aplicação FastAPI
-app = FastAPI()
-
-# Rota para obter o token a partir de um usuário autenticado
-def get_current_user_access_key(token: str = Depends(oauth2_scheme)):
-    try:
-        payload = verify_token(token, SECRET_KEY)
-        access_key: str = payload.get("sub")
-        if access_key is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token inválido.",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        return access_key
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token inválido ou expirado.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
 @app.get("/")
 def read_root():
-    return {
-        "message": "Bem-vindo à API do Datalake MinIO!",
-        "instrucoes_login": (
-            "Para acessar, faça o login enviando um POST para a rota '/login' "
-            "com suas credenciais Minio no corpo da requisição."
-        )
-    }
+    return {"message": "Bem-vindo à API do Datalake MinIO!"}
 
-@app.post("/login", status_code=status.HTTP_200_OK)
+# Login e geração de token
+@app.post("/login")
 def login(credentials: MinioCredentials):
-    """
-    Recebe as credenciais do MinIO, verifica a validade e retorna um JWT.
-    """
-    # Verifica se o usuário e a senha existem no nosso banco de dados
     if not (credentials.access_key in fake_db and fake_db[credentials.access_key] == credentials.secret_key):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Credenciais inválidas. Verifique seu access_key e secret_key."
-        )
-    
-    # Se a verificação interna for bem-sucedida, tentamos a conexão com o MinIO
-    try:
-        minio_client_instance = MinioClient(
-            access_key=credentials.access_key,
-            secret_key=credentials.secret_key,
-            endpoint=MINIO_ENDPOINT
-        )
-        minio_client_instance.client.list_buckets()
-        
-        access_token_expires = timedelta(minutes=30)
-        access_token = create_access_token(
-            data={"sub": credentials.access_key},
-            secret_key=SECRET_KEY, 
-            expires_delta=access_token_expires
-        )
-        
-        return {"access_token": access_token, "token_type": "bearer"}
-    except S3Error as err:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao conectar ao MinIO: {err}"
-        )
+        raise HTTPException(status_code=401, detail="Credenciais inválidas")
 
+    token = create_session_token(credentials.access_key)
+    session_store[token] = {
+        "access_key": credentials.access_key,
+        "secret_key": credentials.secret_key
+    }
+    return {"session_token": token}
+
+# Funções de dependência
+def get_upload_instance(token: str = Depends(get_current_user)) -> Upload:
+    session = session_store.get(token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Sessão inválida ou expirada")
+    client = MinioClient(
+        access_key=session["access_key"],
+        secret_key=session["secret_key"]
+    )
+    return Upload(client)
+
+def get_list_instance(token: str = Depends(get_current_user)) -> List:
+    session = session_store.get(token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Sessão inválida ou expirada")
+    client = MinioClient(
+        access_key=session["access_key"],
+        secret_key=session["secret_key"]
+    )
+    return List(client)
+
+def get_download_instance(token: str = Depends(get_current_user)) -> Download:
+    session = session_store.get(token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Sessão inválida ou expirada")
+    client = MinioClient(
+        access_key=session["access_key"],
+        secret_key=session["secret_key"]
+    )
+    return Download(client)
+
+# Rotas de listagem
 @app.get("/buckets")
-def list_buckets(current_user_access_key: str = Depends(get_current_user_access_key)):
-    """
-    Lista todos os buckets acessíveis para o usuário autenticado.
-    """
-    try:
-        minio_client_instance = MinioClient(
-            access_key=current_user_access_key,
-            secret_key=fake_db.get(current_user_access_key),
-            endpoint=MINIO_ENDPOINT
-        )
-        buckets = minio_client_instance.client.list_buckets()
-        return {"buckets": [bucket.name for bucket in buckets]}
-    except S3Error as err:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao listar buckets: {err}"
-        )
+def list_buckets(list_service: List = Depends(get_list_instance)):
+    return list_service.list_all_buckets()
+
 @app.get("/buckets/{bucket_name}")
-def list_buckets_content(
+def list_buckets_content(bucket_name: str, prefix: str = "", list_service: List = Depends(get_list_instance)):
+    return list_service.list_content(bucket_name, prefix)
+
+# Rotas de upload
+@app.post("/upload/file")
+async def upload_file_api(
     bucket_name: str,
-    prefix: str = "", # <-- Parâmetro opcional para o prefixo
-    current_user_access_key: str = Depends(get_current_user_access_key)
+    file: UploadFile = File(...),
+    prefix: str = "",
+    upload_service: Upload = Depends(get_upload_instance)
 ):
-    """
-    Lista todos os objetos (arquivos e subpastas) dentro de um bucket específico.
-    Se um prefixo for fornecido, lista apenas o conteúdo daquela "pasta".
-    """
-    try:
-        minio_client_instance = MinioClient(
-            access_key=current_user_access_key,
-            secret_key=fake_db.get(current_user_access_key),
-            endpoint=MINIO_ENDPOINT
-        )
-        
-        objects = minio_client_instance.client.list_objects(
-            bucket_name,
-            prefix=prefix, # <-- Passamos o prefixo para o Minio
-            recursive=False # <-- Mudamos para False para listar apenas a pasta atual
-        )
-        
-        return {"objects": [obj.object_name for obj in objects]}
-    except S3Error as err:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao listar o conteúdo do bucket: {err}"
-        )
+    result = upload_service.upload_file(bucket_name, file, prefix)
+    if not result:
+        raise HTTPException(status_code=500, detail="Falha no upload do arquivo")
+    return {"message": "Arquivo enviado com sucesso", "object_name": result}
+
+@app.post("/upload/directory")
+def upload_directory_api(
+    bucket_name: str,
+    local_directory: str,
+    prefix: str = "",
+    upload_service: Upload = Depends(get_upload_instance)
+):
+    success = upload_service.upload_directory(bucket_name, local_directory, prefix)
+    if not success:
+        raise HTTPException(status_code=500, detail="Falha no upload do diretório")
+    return {"message": "Diretório enviado com sucesso"}
+
+# Rotas de download
+@app.get("/download/file")
+def download_file_api(
+    bucket_name: str,
+    object_name: str,
+    local_filename: str = None,
+    download_service: Download = Depends(get_download_instance)
+):
+    success = download_service.download_file(bucket_name, object_name, local_filename)
+    if not success:
+        raise HTTPException(status_code=500, detail="Falha ao baixar arquivo")
+    return {"message": f"Arquivo '{object_name}' baixado com sucesso"}
+
+@app.get("/download/directory")
+def download_directory_api(
+    bucket_name: str,
+    prefix: str,
+    local_directory: str = None,
+    download_service: Download = Depends(get_download_instance)
+):
+    success = download_service.download_directory(bucket_name, prefix, local_directory)
+    if not success:
+        raise HTTPException(status_code=500, detail="Falha ao baixar diretório")
+    return {"message": f"Diretório '{prefix}' baixado com sucesso"}
