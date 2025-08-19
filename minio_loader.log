@@ -1,0 +1,162 @@
+2025-08-19 11:38:56,849 [INFO] Lendo arquivo 'dados/arquivo.csv' do bucket 'meu-bucket'...
+2025-08-19 11:38:57,483 [ERROR] Erro ao ler arquivo: Invalid endpoint: 127.0.0.1:9000
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/src/utils/loader.py", line 51, in load_dataset
+    df = pd.read_csv(s3_path, storage_options=storage_options)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/common.py", line 728, in get_handle
+    ioargs = _get_filepath_or_buffer(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/common.py", line 432, in _get_filepath_or_buffer
+    ).open()
+      ^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/core.py", line 147, in open
+    return self.__enter__()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/core.py", line 105, in __enter__
+    f = self.fs.open(self.path, mode=mode)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/spec.py", line 1338, in open
+    f = self._open(
+        ^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 720, in _open
+    return S3File(
+           ^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 2257, in __init__
+    super().__init__(
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/spec.py", line 1912, in __init__
+    self.size = self.details["size"]
+                ^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/spec.py", line 1925, in details
+    self._details = self.fs.info(self.path)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/asyn.py", line 118, in wrapper
+    return sync(self.loop, func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/asyn.py", line 103, in sync
+    raise return_result
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/asyn.py", line 56, in _runner
+    result[0] = await coro
+                ^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 1445, in _info
+    out = await self._call_s3(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 364, in _call_s3
+    await self.set_session()
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 572, in set_session
+    self._s3 = await s3creator.__aenter__()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/session.py", line 27, in __aenter__
+    self._client = await self._coro
+                   ^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/context.py", line 36, in wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/session.py", line 234, in _create_client
+    client = await client_creator.create_client(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/client.py", line 83, in create_client
+    client_args = self._get_client_args(
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/client.py", line 293, in _get_client_args
+    return args_creator.get_client_args(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/args.py", line 79, in get_client_args
+    endpoint = endpoint_creator.create_endpoint(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/endpoint.py", line 327, in create_endpoint
+    raise ValueError(f"Invalid endpoint: {endpoint_url}")
+ValueError: Invalid endpoint: 127.0.0.1:9000
+2025-08-19 11:39:26,211 [INFO] Lendo arquivo 'analise_vendas.csv' do bucket 'datalake'...
+2025-08-19 11:39:26,490 [ERROR] Erro ao ler arquivo: Invalid endpoint: 127.0.0.1:9000
+Traceback (most recent call last):
+  File "/Users/gabrielazevedo/projects/src/IC/src/utils/loader.py", line 51, in load_dataset
+    df = pd.read_csv(s3_path, storage_options=storage_options)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/common.py", line 728, in get_handle
+    ioargs = _get_filepath_or_buffer(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/pandas/io/common.py", line 432, in _get_filepath_or_buffer
+    ).open()
+      ^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/core.py", line 147, in open
+    return self.__enter__()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/core.py", line 105, in __enter__
+    f = self.fs.open(self.path, mode=mode)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/spec.py", line 1338, in open
+    f = self._open(
+        ^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 720, in _open
+    return S3File(
+           ^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 2257, in __init__
+    super().__init__(
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/spec.py", line 1912, in __init__
+    self.size = self.details["size"]
+                ^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/spec.py", line 1925, in details
+    self._details = self.fs.info(self.path)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/asyn.py", line 118, in wrapper
+    return sync(self.loop, func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/asyn.py", line 103, in sync
+    raise return_result
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/fsspec/asyn.py", line 56, in _runner
+    result[0] = await coro
+                ^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 1445, in _info
+    out = await self._call_s3(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 364, in _call_s3
+    await self.set_session()
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/s3fs/core.py", line 572, in set_session
+    self._s3 = await s3creator.__aenter__()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/session.py", line 27, in __aenter__
+    self._client = await self._coro
+                   ^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/context.py", line 36, in wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/session.py", line 234, in _create_client
+    client = await client_creator.create_client(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/client.py", line 83, in create_client
+    client_args = self._get_client_args(
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/client.py", line 293, in _get_client_args
+    return args_creator.get_client_args(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/args.py", line 79, in get_client_args
+    endpoint = endpoint_creator.create_endpoint(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gabrielazevedo/.pyenv/versions/3.11.6/lib/python3.11/site-packages/aiobotocore/endpoint.py", line 327, in create_endpoint
+    raise ValueError(f"Invalid endpoint: {endpoint_url}")
+ValueError: Invalid endpoint: 127.0.0.1:9000

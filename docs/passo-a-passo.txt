@@ -55,3 +55,5 @@ git add .
 git commit -m "Atualização da API MinIO: upload, list e download funcional"
 git push origin feature/minio-api
 # NÃO FAZER merge ainda
+
+poetry run python researchers_scripts/minio_loader.py
